@@ -16,15 +16,26 @@ const orderRoutes = require('./routes/orderRoutes');
 const app = express();
 const server = http.createServer(app);
 
-// CORS - allow all origins in production for flexibility
-const corsOptions = process.env.NODE_ENV === 'production'
-    ? { origin: true, credentials: true }
-    : { origin: ['http://localhost:5173', 'http://localhost:3000', 'http://localhost:5174'], credentials: true };
+// CORS configuration
+app.use(cors({
+    origin: function (origin, callback) {
+        // Allow requests with no origin (mobile apps, curl, etc.)
+        if (!origin) return callback(null, true);
+        // Allow all origins
+        return callback(null, true);
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 // Initialize Socket.io
 const io = new Server(server, {
     cors: {
-        origin: corsOptions.origin === true ? '*' : corsOptions.origin,
+        origin: function (origin, callback) {
+            if (!origin) return callback(null, true);
+            return callback(null, true);
+        },
         methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
         credentials: true
     }
@@ -37,7 +48,6 @@ app.set('io', io);
 connectDB();
 
 // Middleware
-app.use(cors(corsOptions));
 app.use(express.json());
 
 // Routes
