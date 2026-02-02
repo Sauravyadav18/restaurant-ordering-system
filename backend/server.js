@@ -54,6 +54,11 @@ connectDB();
 // Middleware
 app.use(express.json());
 
+// Root route - for basic testing
+app.get('/', (req, res) => {
+    res.json({ success: true, message: 'Restaurant API Server', version: '1.0.0' });
+});
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/menu', menuRoutes);
