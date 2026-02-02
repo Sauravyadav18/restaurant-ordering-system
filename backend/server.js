@@ -16,15 +16,15 @@ const orderRoutes = require('./routes/orderRoutes');
 const app = express();
 const server = http.createServer(app);
 
-// CORS origins - allow all in production for flexibility
-const allowedOrigins = process.env.NODE_ENV === 'production'
-    ? [process.env.FRONTEND_URL, /\.vercel\.app$/]
-    : ['http://localhost:5173', 'http://localhost:3000', 'http://localhost:5174'];
+// CORS - allow all origins in production for flexibility
+const corsOptions = process.env.NODE_ENV === 'production'
+    ? { origin: true, credentials: true }
+    : { origin: ['http://localhost:5173', 'http://localhost:3000', 'http://localhost:5174'], credentials: true };
 
 // Initialize Socket.io
 const io = new Server(server, {
     cors: {
-        origin: allowedOrigins,
+        origin: corsOptions.origin === true ? '*' : corsOptions.origin,
         methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
         credentials: true
     }
@@ -37,10 +37,7 @@ app.set('io', io);
 connectDB();
 
 // Middleware
-app.use(cors({
-    origin: allowedOrigins,
-    credentials: true
-}));
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Routes
