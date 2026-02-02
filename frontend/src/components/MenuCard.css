@@ -118,3 +118,40 @@
     opacity: 0.5;
     cursor: not-allowed;
 }
+
+/* Responsive MenuCard */
+@media (max-width: 480px) {
+    .menu-card {
+        border-radius: 16px;
+    }
+
+    .menu-card-image {
+        height: 150px;
+    }
+
+    .placeholder-image {
+        font-size: 3rem;
+    }
+
+    .menu-card-content {
+        padding: 1rem;
+    }
+
+    .menu-card-title {
+        font-size: 1rem;
+    }
+
+    .menu-card-price {
+        font-size: 1.1rem;
+    }
+
+    .menu-card-description {
+        font-size: 0.8rem;
+    }
+
+    .add-to-cart-btn {
+        padding: 0.65rem;
+        font-size: 0.85rem;
+        border-radius: 10px;
+    }
+}
