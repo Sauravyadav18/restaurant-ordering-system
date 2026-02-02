@@ -14,69 +14,61 @@ const orderRoutes = require('./routes/orderRoutes');
 
 // Initialize express app
 const app = express();
-const server = http.createServer(app);
 
-// Manual CORS headers - ensure they're always set
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
-    res.header('Access-Control-Allow-Credentials', 'true');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+// CORS - Allow all origins
+app.use(cors());
 
-    // Handle preflight
-    if (req.method === 'OPTIONS') {
-        return res.sendStatus(200);
-    }
-    next();
+// Parse JSON
+app.use(express.json());
+
+// Debug route - FIRST route to test
+app.get('/', (req, res) => {
+    console.log('Root route hit');
+    res.json({ success: true, message: 'Restaurant API Server', version: '1.0.0' });
 });
 
-// Also use cors library as backup
-app.use(cors());
+app.get('/api/health', (req, res) => {
+    console.log('Health route hit');
+    res.json({ success: true, message: 'Server is running' });
+});
+
+// Connect to database
+connectDB();
+
+// API Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/menu', menuRoutes);
+app.use('/api/orders', orderRoutes);
+
+// 404 handler - catch all unmatched routes
+app.use((req, res) => {
+    console.log('404 - Route not found:', req.method, req.url);
+    res.status(404).json({ success: false, message: 'Route not found', path: req.url });
+});
+
+// Error handler
+app.use(errorHandler);
+
+// Create HTTP server
+const server = http.createServer(app);
 
 // Initialize Socket.io
 const io = new Server(server, {
     cors: {
-        origin: function (origin, callback) {
-            if (!origin) return callback(null, true);
-            return callback(null, true);
-        },
-        methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
-        credentials: true
+        origin: '*',
+        methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
     }
 });
 
 // Make io accessible to routes
 app.set('io', io);
 
-// Connect to database
-connectDB();
-
-// Middleware
-app.use(express.json());
-
-// Root route - for basic testing
-app.get('/', (req, res) => {
-    res.json({ success: true, message: 'Restaurant API Server', version: '1.0.0' });
-});
-
-// Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/menu', menuRoutes);
-app.use('/api/orders', orderRoutes);
-
-// Health check route
-app.get('/api/health', (req, res) => {
-    res.json({ success: true, message: 'Server is running' });
-});
-
-// Error handler
-app.use(errorHandler);
-
 // Socket handler
 socketHandler(io);
 
 // Start server
 const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => {
+server.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on port ${PORT}`);
+    console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
 });
