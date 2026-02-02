@@ -27,6 +27,18 @@ app.get('/', (req, res) => {
     res.json({ success: true, message: 'Restaurant API Server', version: '1.0.0' });
 });
 
+// Test route without /api prefix
+app.get('/test', (req, res) => {
+    console.log('Test route hit');
+    res.json({ success: true, message: 'Test route works' });
+});
+
+// Test route with /api prefix
+app.get('/api', (req, res) => {
+    console.log('API root route hit');
+    res.json({ success: true, message: 'API root works' });
+});
+
 app.get('/api/health', (req, res) => {
     console.log('Health route hit');
     res.json({ success: true, message: 'Server is running' });
