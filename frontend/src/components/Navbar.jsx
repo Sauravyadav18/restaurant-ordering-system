@@ -34,7 +34,7 @@ const Navbar = () => {
                         </>
                     )}
 
-                    {user ? (
+                    {isAdminPage && user ? (
                         <>
                             <Link to="/admin" className="nav-link">
                                 Dashboard
@@ -43,11 +43,11 @@ const Navbar = () => {
                                 Logout
                             </button>
                         </>
-                    ) : (
+                    ) : !isAdminPage ? (
                         <Link to="/admin/login" className="nav-link">
                             <FiUser /> Admin
                         </Link>
-                    )}
+                    ) : null}
                 </div>
             </div>
         </nav>
