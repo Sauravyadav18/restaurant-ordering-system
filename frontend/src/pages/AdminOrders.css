@@ -199,4 +199,120 @@
     .filter-tab {
         flex-shrink: 0;
     }
+
+    .header-right {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .orders-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Header Right Section */
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+/* Date Filter Dropdown */
+.date-filter-select {
+    padding: 0.75rem 1.25rem;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23a0aec0' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    padding-right: 2.5rem;
+}
+
+.date-filter-select:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.date-filter-select:focus {
+    outline: none;
+    border-color: #ff6b6b;
+}
+
+.date-filter-select option {
+    background: #1e1e30;
+    color: #fff;
+}
+
+/* Orders Section */
+.orders-section {
+    margin-bottom: 3rem;
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+}
+
+.section-count {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.fire-icon,
+.calendar-icon {
+    font-size: 1.25rem;
+}
+
+/* Closed Orders Section */
+.closed-section {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 2rem;
+}
+
+.section-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    color: #a0aec0;
+    margin-bottom: 1.5rem;
+}
+
+.section-toggle:hover {
+    color: #fff;
+}
+
+.section-toggle .section-title {
+    margin-bottom: 0;
+    color: #a0aec0;
+}
+
+.section-toggle:hover .section-title {
+    color: #fff;
+}
+
+.section-toggle svg {
+    font-size: 1.5rem;
+}
+
+.closed-grid {
+    opacity: 0.9;
 }

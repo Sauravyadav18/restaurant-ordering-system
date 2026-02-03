@@ -142,3 +142,69 @@
     color: #10ac84;
     font-weight: 600;
 }
+
+/* Payment Badge */
+.payment-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.payment-badge.paid {
+    background: linear-gradient(135deg, #10ac84, #0a8967);
+    color: #fff;
+}
+
+/* Closed Badge */
+.closed-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: #4a5568;
+    color: #e0e0e0;
+}
+
+/* Payment Button */
+.action-btn.payment {
+    background: linear-gradient(135deg, #6c5ce7, #5a52d5);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.action-btn.payment:hover {
+    box-shadow: 0 5px 20px rgba(108, 92, 231, 0.4);
+}
+
+/* Closed Order Card Styling */
+.order-card.closed {
+    background: linear-gradient(145deg, #2d2d3d, #333348);
+    opacity: 0.8;
+}
+
+.order-card.closed .order-card-header {
+    border-bottom-color: rgba(255, 255, 255, 0.05);
+}
+
+.order-card.closed .order-id {
+    color: #a0aec0;
+}
+
+.order-card.closed .order-total span {
+    color: #a0aec0;
+}
+
+.order-card.closed:hover {
+    opacity: 0.9;
+    transform: none;
+}

@@ -1,5 +1,31 @@
 const Order = require('../models/Order');
 
+// Helper function to get date filter
+const getDateFilter = (filter) => {
+    const now = new Date();
+    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+    switch (filter) {
+        case 'today':
+            return { createdAt: { $gte: startOfToday } };
+        case 'yesterday':
+            const startOfYesterday = new Date(startOfToday);
+            startOfYesterday.setDate(startOfYesterday.getDate() - 1);
+            return {
+                createdAt: {
+                    $gte: startOfYesterday,
+                    $lt: startOfToday
+                }
+            };
+        case 'week':
+            const weekAgo = new Date(startOfToday);
+            weekAgo.setDate(weekAgo.getDate() - 7);
+            return { createdAt: { $gte: weekAgo } };
+        default:
+            return {};
+    }
+};
+
 // Create new order (Customer)
 exports.createOrder = async (req, res) => {
     try {
@@ -22,7 +48,9 @@ exports.createOrder = async (req, res) => {
             tableNumber,
             items,
             totalAmount,
-            status: 'Pending'
+            status: 'Pending',
+            paymentStatus: 'Unpaid',
+            isClosed: false
         });
 
         // Emit socket event for real-time update
@@ -54,8 +82,24 @@ exports.createOrder = async (req, res) => {
 // Get all orders (Admin only)
 exports.getAllOrders = async (req, res) => {
     try {
-        const { status } = req.query;
-        const filter = status ? { status } : {};
+        const { status, dateFilter, isClosed } = req.query;
+
+        // Build filter object
+        let filter = {};
+
+        // Status filter
+        if (status) {
+            filter.status = status;
+        }
+
+        // Date filter
+        const dateConditions = getDateFilter(dateFilter);
+        filter = { ...filter, ...dateConditions };
+
+        // isClosed filter
+        if (isClosed !== undefined) {
+            filter.isClosed = isClosed === 'true';
+        }
 
         const orders = await Order.find(filter).sort({ createdAt: -1 });
 
@@ -131,6 +175,52 @@ exports.updateOrderStatus = async (req, res) => {
 
         res.json({
             success: true,
+            data: order
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Server error',
+            error: error.message
+        });
+    }
+};
+
+// Update payment status (Admin only)
+exports.updatePaymentStatus = async (req, res) => {
+    try {
+        const order = await Order.findById(req.params.id);
+
+        if (!order) {
+            return res.status(404).json({
+                success: false,
+                message: 'Order not found'
+            });
+        }
+
+        // Only allow payment update if order is Served
+        if (order.status !== 'Served') {
+            return res.status(400).json({
+                success: false,
+                message: 'Order must be served before marking as paid'
+            });
+        }
+
+        // Update payment status and close the order
+        order.paymentStatus = 'Paid';
+        order.isClosed = true;
+        await order.save();
+
+        // Emit socket event for real-time update
+        const io = req.app.get('io');
+        if (io) {
+            io.emit('order-updated', order);
+            io.emit('order-closed', order);
+        }
+
+        res.json({
+            success: true,
+            message: 'Payment received and order closed',
             data: order
         });
     } catch (error) {

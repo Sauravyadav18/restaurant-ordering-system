@@ -37,9 +37,10 @@ export const menuAPI = {
 // Orders API
 export const ordersAPI = {
     create: (orderData) => api.post('/orders', orderData),
-    getAll: (status) => api.get('/orders', { params: status ? { status } : {} }),
+    getAll: (params = {}) => api.get('/orders', { params }),
     getOne: (id) => api.get(`/orders/${id}`),
-    updateStatus: (id, status) => api.patch(`/orders/${id}`, { status })
+    updateStatus: (id, status) => api.patch(`/orders/${id}`, { status }),
+    updatePayment: (id) => api.patch(`/orders/${id}/payment`)
 };
 
 export default api;

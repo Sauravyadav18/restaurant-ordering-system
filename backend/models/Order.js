@@ -46,6 +46,15 @@ const orderSchema = new mongoose.Schema({
         type: String,
         enum: ['Pending', 'Preparing', 'Served'],
         default: 'Pending'
+    },
+    paymentStatus: {
+        type: String,
+        enum: ['Unpaid', 'Paid'],
+        default: 'Unpaid'
+    },
+    isClosed: {
+        type: Boolean,
+        default: false
     }
 }, {
     timestamps: true

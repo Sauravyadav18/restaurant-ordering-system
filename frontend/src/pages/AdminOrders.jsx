@@ -5,7 +5,7 @@ import { ordersAPI } from '../services/api';
 import { socket, connectSocket, joinAdminRoom } from '../services/socket';
 import OrderCard from '../components/OrderCard';
 import toast from 'react-hot-toast';
-import { FiArrowLeft, FiRefreshCw } from 'react-icons/fi';
+import { FiArrowLeft, FiRefreshCw, FiChevronDown, FiChevronUp } from 'react-icons/fi';
 import './AdminOrders.css';
 
 const AdminOrders = () => {
@@ -13,7 +13,9 @@ const AdminOrders = () => {
     const { user, loading: authLoading } = useAuth();
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [filter, setFilter] = useState('all');
+    const [statusFilter, setStatusFilter] = useState('all');
+    const [dateFilter, setDateFilter] = useState('today');
+    const [showClosed, setShowClosed] = useState(false);
 
     useEffect(() => {
         if (!authLoading && !user) {
@@ -44,17 +46,37 @@ const AdminOrders = () => {
                 );
             });
 
+            // Listen for order closed
+            socket.on('order-closed', (closedOrder) => {
+                setOrders((prev) =>
+                    prev.map((order) =>
+                        order._id === closedOrder._id ? closedOrder : order
+                    )
+                );
+            });
+
             return () => {
                 socket.off('new-order');
                 socket.off('order-updated');
+                socket.off('order-closed');
             };
         }
     }, [user]);
 
+    useEffect(() => {
+        if (user) {
+            fetchOrders();
+        }
+    }, [dateFilter]);
+
     const fetchOrders = async () => {
         try {
             setLoading(true);
-            const response = await ordersAPI.getAll();
+            const params = {};
+            if (dateFilter !== 'all') {
+                params.dateFilter = dateFilter;
+            }
+            const response = await ordersAPI.getAll(params);
             setOrders(response.data.data);
         } catch (error) {
             toast.error('Failed to load orders');
@@ -72,17 +94,31 @@ const AdminOrders = () => {
         }
     };
 
-    const filteredOrders = orders.filter((order) => {
-        if (filter === 'all') return true;
-        return order.status === filter;
+    const handlePaymentReceived = async (orderId) => {
+        try {
+            await ordersAPI.updatePayment(orderId);
+            toast.success('Payment received! Order closed.');
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Failed to update payment');
+        }
+    };
+
+    // Separate active and closed orders
+    const activeOrders = orders.filter((order) => !order.isClosed);
+    const closedOrders = orders.filter((order) => order.isClosed);
+
+    // Filter active orders by status
+    const filteredActiveOrders = activeOrders.filter((order) => {
+        if (statusFilter === 'all') return true;
+        return order.status === statusFilter;
     });
 
     const getOrderCounts = () => {
         return {
-            all: orders.length,
-            Pending: orders.filter((o) => o.status === 'Pending').length,
-            Preparing: orders.filter((o) => o.status === 'Preparing').length,
-            Served: orders.filter((o) => o.status === 'Served').length
+            all: activeOrders.length,
+            Pending: activeOrders.filter((o) => o.status === 'Pending').length,
+            Preparing: activeOrders.filter((o) => o.status === 'Preparing').length,
+            Served: activeOrders.filter((o) => o.status === 'Served').length
         };
     };
 
@@ -101,65 +137,121 @@ const AdminOrders = () => {
                     </button>
                     <h1>Order Management</h1>
                 </div>
-                <button className="refresh-btn" onClick={fetchOrders}>
-                    <FiRefreshCw /> Refresh
-                </button>
-            </div>
-
-            <div className="filter-tabs">
-                <button
-                    className={`filter-tab ${filter === 'all' ? 'active' : ''}`}
-                    onClick={() => setFilter('all')}
-                >
-                    All <span className="count">{counts.all}</span>
-                </button>
-                <button
-                    className={`filter-tab pending ${filter === 'Pending' ? 'active' : ''}`}
-                    onClick={() => setFilter('Pending')}
-                >
-                    Pending <span className="count">{counts.Pending}</span>
-                </button>
-                <button
-                    className={`filter-tab preparing ${filter === 'Preparing' ? 'active' : ''}`}
-                    onClick={() => setFilter('Preparing')}
-                >
-                    Preparing <span className="count">{counts.Preparing}</span>
-                </button>
-                <button
-                    className={`filter-tab served ${filter === 'Served' ? 'active' : ''}`}
-                    onClick={() => setFilter('Served')}
-                >
-                    Served <span className="count">{counts.Served}</span>
-                </button>
-            </div>
-
-            <div className="realtime-indicator">
-                <span className="pulse"></span>
-                Live updates enabled
-            </div>
-
-            {loading ? (
-                <div className="loading-state">
-                    <div className="loader"></div>
+                <div className="header-right">
+                    <select
+                        className="date-filter-select"
+                        value={dateFilter}
+                        onChange={(e) => setDateFilter(e.target.value)}
+                    >
+                        <option value="today">Today</option>
+                        <option value="yesterday">Yesterday</option>
+                        <option value="week">Last 7 Days</option>
+                        <option value="all">All Time</option>
+                    </select>
+                    <button className="refresh-btn" onClick={fetchOrders}>
+                        <FiRefreshCw /> Refresh
+                    </button>
                 </div>
-            ) : (
-                <div className="orders-grid">
-                    {filteredOrders.map((order) => (
-                        <OrderCard
-                            key={order._id}
-                            order={order}
-                            onStatusChange={handleStatusChange}
-                        />
-                    ))}
+            </div>
 
-                    {filteredOrders.length === 0 && (
-                        <div className="empty-state">
-                            <span className="empty-icon">📋</span>
-                            <p>No {filter !== 'all' ? filter.toLowerCase() : ''} orders found</p>
-                        </div>
-                    )}
+            {/* Active Orders Section */}
+            <div className="orders-section">
+                <h2 className="section-title">
+                    <span className="fire-icon">🔥</span> Active Orders
+                    <span className="section-count">{activeOrders.length}</span>
+                </h2>
+
+                <div className="filter-tabs">
+                    <button
+                        className={`filter-tab ${statusFilter === 'all' ? 'active' : ''}`}
+                        onClick={() => setStatusFilter('all')}
+                    >
+                        All <span className="count">{counts.all}</span>
+                    </button>
+                    <button
+                        className={`filter-tab pending ${statusFilter === 'Pending' ? 'active' : ''}`}
+                        onClick={() => setStatusFilter('Pending')}
+                    >
+                        Pending <span className="count">{counts.Pending}</span>
+                    </button>
+                    <button
+                        className={`filter-tab preparing ${statusFilter === 'Preparing' ? 'active' : ''}`}
+                        onClick={() => setStatusFilter('Preparing')}
+                    >
+                        Preparing <span className="count">{counts.Preparing}</span>
+                    </button>
+                    <button
+                        className={`filter-tab served ${statusFilter === 'Served' ? 'active' : ''}`}
+                        onClick={() => setStatusFilter('Served')}
+                    >
+                        Served <span className="count">{counts.Served}</span>
+                    </button>
                 </div>
-            )}
+
+                <div className="realtime-indicator">
+                    <span className="pulse"></span>
+                    Live updates enabled
+                </div>
+
+                {loading ? (
+                    <div className="loading-state">
+                        <div className="loader"></div>
+                    </div>
+                ) : (
+                    <div className="orders-grid">
+                        {filteredActiveOrders.map((order) => (
+                            <OrderCard
+                                key={order._id}
+                                order={order}
+                                onStatusChange={handleStatusChange}
+                                onPaymentReceived={handlePaymentReceived}
+                            />
+                        ))}
+
+                        {filteredActiveOrders.length === 0 && (
+                            <div className="empty-state">
+                                <span className="empty-icon">📋</span>
+                                <p>No {statusFilter !== 'all' ? statusFilter.toLowerCase() : 'active'} orders found</p>
+                            </div>
+                        )}
+                    </div>
+                )}
+            </div>
+
+            {/* Closed Orders Section */}
+            <div className="orders-section closed-section">
+                <button
+                    className="section-toggle"
+                    onClick={() => setShowClosed(!showClosed)}
+                >
+                    <h2 className="section-title">
+                        <span className="calendar-icon">📅</span> Closed Orders
+                        <span className="section-count">{closedOrders.length}</span>
+                    </h2>
+                    {showClosed ? <FiChevronUp /> : <FiChevronDown />}
+                </button>
+
+                {showClosed && (
+                    <div className="orders-grid closed-grid">
+                        {closedOrders.map((order) => (
+                            <OrderCard
+                                key={order._id}
+                                order={order}
+                                onStatusChange={handleStatusChange}
+                                onPaymentReceived={handlePaymentReceived}
+                                isClosed={true}
+                            />
+                        ))}
+
+                        {closedOrders.length === 0 && (
+                            <div className="empty-state">
+                                <span className="empty-icon">✅</span>
+                                <p>No closed orders</p>
+                            </div>
+                        )}
+                    </div>
+                )}
+            </div>
         </div>
     );
 };

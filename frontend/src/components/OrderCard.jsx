@@ -1,7 +1,7 @@
-import { FiClock, FiUser } from 'react-icons/fi';
+import { FiClock, FiUser, FiDollarSign, FiCheck } from 'react-icons/fi';
 import './OrderCard.css';
 
-const OrderCard = ({ order, onStatusChange, showActions = true }) => {
+const OrderCard = ({ order, onStatusChange, onPaymentReceived, showActions = true, isClosed = false }) => {
     const statusColors = {
         Pending: '#feca57',
         Preparing: '#00d2d3',
@@ -18,7 +18,7 @@ const OrderCard = ({ order, onStatusChange, showActions = true }) => {
     };
 
     return (
-        <div className="order-card">
+        <div className={`order-card ${isClosed ? 'closed' : ''}`}>
             <div className="order-card-header">
                 <div className="order-info">
                     <span className="order-id">#{order._id.slice(-6).toUpperCase()}</span>
@@ -28,6 +28,16 @@ const OrderCard = ({ order, onStatusChange, showActions = true }) => {
                     >
                         {order.status}
                     </span>
+                    {order.paymentStatus === 'Paid' && (
+                        <span className="payment-badge paid">
+                            <FiDollarSign /> Paid
+                        </span>
+                    )}
+                    {order.isClosed && (
+                        <span className="closed-badge">
+                            <FiCheck /> Closed
+                        </span>
+                    )}
                 </div>
                 <div className="table-info">
                     <FiUser />
@@ -55,7 +65,7 @@ const OrderCard = ({ order, onStatusChange, showActions = true }) => {
                 </div>
             </div>
 
-            {showActions && onStatusChange && (
+            {showActions && !isClosed && onStatusChange && (
                 <div className="order-actions">
                     {order.status === 'Pending' && (
                         <button
@@ -73,9 +83,23 @@ const OrderCard = ({ order, onStatusChange, showActions = true }) => {
                             Mark as Served
                         </button>
                     )}
-                    {order.status === 'Served' && (
-                        <span className="completed-text">✓ Completed</span>
+                    {order.status === 'Served' && order.paymentStatus === 'Unpaid' && onPaymentReceived && (
+                        <button
+                            className="action-btn payment"
+                            onClick={() => onPaymentReceived(order._id)}
+                        >
+                            <FiDollarSign /> Payment Received
+                        </button>
                     )}
+                    {order.status === 'Served' && order.paymentStatus === 'Paid' && (
+                        <span className="completed-text">✓ Order Closed</span>
+                    )}
+                </div>
+            )}
+
+            {isClosed && (
+                <div className="order-actions">
+                    <span className="completed-text">✓ Order Completed</span>
                 </div>
             )}
         </div>
