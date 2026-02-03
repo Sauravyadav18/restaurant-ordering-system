@@ -25,7 +25,14 @@ const orderSchema = new mongoose.Schema({
     tableNumber: {
         type: Number,
         required: [true, 'Table number is required'],
-        min: [1, 'Table number must be at least 1']
+        min: [1, 'Table number must be at least 1'],
+        max: [20, 'Table number must be at most 20']
+    },
+    customerName: {
+        type: String,
+        required: [true, 'Customer name is required'],
+        trim: true,
+        minlength: [2, 'Customer name must be at least 2 characters']
     },
     items: {
         type: [orderItemSchema],

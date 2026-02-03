@@ -29,13 +29,30 @@ const getDateFilter = (filter) => {
 // Create new order (Customer)
 exports.createOrder = async (req, res) => {
     try {
-        const { tableNumber, items } = req.body;
+        const { tableNumber, customerName, items } = req.body;
 
         // Validate input
-        if (!tableNumber || !items || items.length === 0) {
+        if (!tableNumber || !customerName || !items || items.length === 0) {
             return res.status(400).json({
                 success: false,
-                message: 'Please provide table number and at least one item'
+                message: 'Please provide table number, customer name, and at least one item'
+            });
+        }
+
+        // Validate customerName
+        const trimmedName = customerName.trim();
+        if (trimmedName.length < 2) {
+            return res.status(400).json({
+                success: false,
+                message: 'Customer name must be at least 2 characters'
+            });
+        }
+
+        // Validate tableNumber range
+        if (tableNumber < 1 || tableNumber > 20) {
+            return res.status(400).json({
+                success: false,
+                message: 'Table number must be between 1 and 20'
             });
         }
 
@@ -46,6 +63,7 @@ exports.createOrder = async (req, res) => {
 
         const order = await Order.create({
             tableNumber,
+            customerName: trimmedName,
             items,
             totalAmount,
             status: 'Pending',

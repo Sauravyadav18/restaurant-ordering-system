@@ -48,6 +48,35 @@
     font-size: 0.9rem;
 }
 
+.table-badge {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-weight: 600;
+    color: #fff;
+}
+
+/* Customer Info */
+.customer-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    background: rgba(108, 92, 231, 0.1);
+    border-radius: 10px;
+    color: #a78bfa;
+}
+
+.customer-info svg {
+    font-size: 1rem;
+}
+
+.customer-name {
+    font-weight: 600;
+    color: #e0e0e0;
+}
+
 .order-items {
     margin-bottom: 1rem;
 }

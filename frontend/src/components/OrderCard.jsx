@@ -40,10 +40,16 @@ const OrderCard = ({ order, onStatusChange, onPaymentReceived, showActions = tru
                     )}
                 </div>
                 <div className="table-info">
-                    <FiUser />
-                    <span>Table {order.tableNumber}</span>
+                    <span className="table-badge">Table {order.tableNumber}</span>
                 </div>
             </div>
+
+            {order.customerName && (
+                <div className="customer-info">
+                    <FiUser />
+                    <span className="customer-name">{order.customerName}</span>
+                </div>
+            )}
 
             <div className="order-items">
                 {order.items.map((item, index) => (

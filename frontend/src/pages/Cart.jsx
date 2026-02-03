@@ -4,7 +4,7 @@ import { useCart } from '../context/CartContext';
 import { ordersAPI } from '../services/api';
 import CartItem from '../components/CartItem';
 import toast from 'react-hot-toast';
-import { FiShoppingBag, FiArrowLeft } from 'react-icons/fi';
+import { FiShoppingBag, FiArrowLeft, FiUser } from 'react-icons/fi';
 import './Cart.css';
 
 const Cart = () => {
@@ -12,10 +12,20 @@ const Cart = () => {
     const { cartItems, tableNumber, setTableNumber, getCartTotal, clearCart } = useCart();
     const [loading, setLoading] = useState(false);
     const [tableInput, setTableInput] = useState(tableNumber || '');
+    const [customerName, setCustomerName] = useState('');
 
     const handlePlaceOrder = async () => {
-        if (!tableInput || parseInt(tableInput) < 1) {
-            toast.error('Please enter a valid table number');
+        // Validate customer name
+        const trimmedName = customerName.trim();
+        if (!trimmedName || trimmedName.length < 2) {
+            toast.error('Please enter your name (at least 2 characters)');
+            return;
+        }
+
+        // Validate table number
+        const tableNum = parseInt(tableInput);
+        if (!tableInput || tableNum < 1 || tableNum > 20) {
+            toast.error('Please enter a valid table number (1-20)');
             return;
         }
 
@@ -28,7 +38,8 @@ const Cart = () => {
 
         try {
             const orderData = {
-                tableNumber: parseInt(tableInput),
+                tableNumber: tableNum,
+                customerName: trimmedName,
                 items: cartItems.map((item) => ({
                     menuItem: item._id,
                     name: item.name,
@@ -40,7 +51,7 @@ const Cart = () => {
             const response = await ordersAPI.create(orderData);
 
             if (response.data.success) {
-                setTableNumber(parseInt(tableInput));
+                setTableNumber(tableNum);
                 clearCart();
                 toast.success('Order placed successfully!');
                 navigate(`/order/${response.data.data._id}`);
@@ -89,13 +100,28 @@ const Cart = () => {
                     <div className="cart-summary">
                         <h3>Order Summary</h3>
 
+                        <div className="customer-input-section">
+                            <label htmlFor="customerName">
+                                <FiUser /> Your Name
+                            </label>
+                            <input
+                                type="text"
+                                id="customerName"
+                                placeholder="Enter your name"
+                                value={customerName}
+                                onChange={(e) => setCustomerName(e.target.value)}
+                                maxLength={50}
+                            />
+                        </div>
+
                         <div className="table-input-section">
                             <label htmlFor="tableNumber">Table Number</label>
                             <input
                                 type="number"
                                 id="tableNumber"
                                 min="1"
-                                placeholder="Enter your table number"
+                                max="20"
+                                placeholder="Enter table number (1-20)"
                                 value={tableInput}
                                 onChange={(e) => setTableInput(e.target.value)}
                             />
