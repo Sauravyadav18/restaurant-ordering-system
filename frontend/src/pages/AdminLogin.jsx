@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
@@ -7,16 +7,17 @@ import './AdminLogin.css';
 
 const AdminLogin = () => {
     const navigate = useNavigate();
-    const { login, user } = useAuth();
+    const { login, user, loading: authLoading } = useAuth();
     const [mobile, setMobile] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
 
-    // Redirect if already logged in
-    if (user) {
-        navigate('/admin');
-        return null;
-    }
+    // Redirect if already logged in (using useEffect to avoid blank screen)
+    useEffect(() => {
+        if (!authLoading && user) {
+            navigate('/admin', { replace: true });
+        }
+    }, [user, authLoading, navigate]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -31,13 +32,41 @@ const AdminLogin = () => {
         try {
             await login(mobile, password);
             toast.success('Login successful!');
-            navigate('/admin');
+            navigate('/admin', { replace: true });
         } catch (error) {
             toast.error(error.response?.data?.message || 'Login failed');
         } finally {
             setLoading(false);
         }
     };
+
+    // Show loading state while checking authentication
+    if (authLoading) {
+        return (
+            <div className="admin-login-page">
+                <div className="login-container">
+                    <div className="login-loading">
+                        <div className="loader"></div>
+                        <p>Checking authentication...</p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    // Don't render login form if user is authenticated (redirect will happen via useEffect)
+    if (user) {
+        return (
+            <div className="admin-login-page">
+                <div className="login-container">
+                    <div className="login-loading">
+                        <div className="loader"></div>
+                        <p>Redirecting to dashboard...</p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="admin-login-page">
