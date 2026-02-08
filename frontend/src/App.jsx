@@ -10,12 +10,13 @@ import OrderSuccess from './pages/OrderSuccess';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminOrders from './pages/AdminOrders';
+import AdminTables from './pages/AdminTables';
 import './App.css';
 
 // Wrapper to conditionally show FloatingCart
 const FloatingCartWrapper = () => {
   const location = useLocation();
-  const hideOnPaths = ['/cart', '/admin', '/admin/login', '/admin/orders'];
+  const hideOnPaths = ['/cart', '/admin', '/order'];
 
   // Hide floating cart on cart page and admin pages
   const shouldHide = hideOnPaths.some(path => location.pathname.startsWith(path));
@@ -39,6 +40,7 @@ function App() {
                 <Route path="/admin/login" element={<AdminLogin />} />
                 <Route path="/admin" element={<AdminDashboard />} />
                 <Route path="/admin/orders" element={<AdminOrders />} />
+                <Route path="/admin/tables" element={<AdminTables />} />
               </Routes>
             </main>
             <FloatingCartWrapper />

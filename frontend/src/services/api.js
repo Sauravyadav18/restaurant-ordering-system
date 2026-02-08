@@ -46,8 +46,11 @@ export const ordersAPI = {
 // Tables API
 export const tablesAPI = {
     getAvailable: () => api.get('/tables/available'),
-    getAll: () => api.get('/tables')
+    getAll: () => api.get('/tables'),
+    updateStatus: (id, data) => api.patch(`/tables/${id}`, data),
+    freeTable: (id) => api.patch(`/tables/${id}/free`)
 };
 
 export default api;
+
 

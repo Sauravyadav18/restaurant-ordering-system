@@ -4,7 +4,8 @@ const {
     getAvailableTables,
     getAllTables,
     updateTableStatus,
-    initializeTables
+    initializeTables,
+    freeTable
 } = require('../controllers/tableController');
 const { protect, authorize } = require('../middleware/authMiddleware');
 
@@ -14,6 +15,7 @@ router.get('/available', getAvailableTables);
 // Protected routes (Admin only)
 router.get('/', protect, authorize('owner'), getAllTables);
 router.patch('/:id', protect, authorize('owner'), updateTableStatus);
+router.patch('/:id/free', protect, authorize('owner'), freeTable);
 router.post('/initialize', protect, authorize('owner'), initializeTables);
 
 module.exports = router;

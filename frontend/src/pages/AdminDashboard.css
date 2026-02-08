@@ -29,6 +29,7 @@
 }
 
 .orders-btn,
+.tables-btn,
 .add-btn {
     display: flex;
     align-items: center;
@@ -39,6 +40,26 @@
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
+}
+
+.orders-btn,
+.tables-btn {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.orders-btn:hover,
+.tables-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.tables-btn {
+    background: rgba(108, 92, 231, 0.2);
+    color: #a78bfa;
+}
+
+.tables-btn:hover {
+    background: rgba(108, 92, 231, 0.3);
 }
 
 .orders-btn {

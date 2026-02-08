@@ -115,3 +115,47 @@ exports.initializeTables = async (req, res) => {
         });
     }
 };
+
+// Free a table manually (admin only)
+exports.freeTable = async (req, res) => {
+    try {
+        const table = await Table.findById(req.params.id);
+
+        if (!table) {
+            return res.status(404).json({
+                success: false,
+                message: 'Table not found'
+            });
+        }
+
+        if (!table.isOccupied) {
+            return res.status(400).json({
+                success: false,
+                message: 'Table is already free'
+            });
+        }
+
+        table.isOccupied = false;
+        table.currentOrder = null;
+        await table.save();
+
+        // Emit socket event
+        const io = req.app.get('io');
+        if (io) {
+            io.emit('table-available', { tableNumber: table.tableNumber });
+            io.emit('table-updated', table);
+        }
+
+        res.json({
+            success: true,
+            message: `Table ${table.tableNumber} is now free`,
+            data: table
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Server error',
+            error: error.message
+        });
+    }
+};

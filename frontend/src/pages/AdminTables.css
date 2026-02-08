@@ -1,0 +1,225 @@
+.admin-tables-page {
+    min-height: calc(100vh - 80px);
+    padding: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.tables-container {
+    background: linear-gradient(145deg, #1e1e30, #252542);
+    border-radius: 24px;
+    padding: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.tables-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.tables-header h1 {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: #fff;
+    font-size: 1.75rem;
+}
+
+.back-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    background: transparent;
+    color: #a0aec0;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+}
+
+/* Stats */
+.tables-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1.25rem;
+    border-radius: 16px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.stat-value {
+    display: block;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 0.25rem;
+}
+
+.stat-label {
+    color: #a0aec0;
+    font-size: 0.85rem;
+}
+
+.stat-card.available .stat-value {
+    color: #10ac84;
+}
+
+.stat-card.occupied .stat-value {
+    color: #ff6b6b;
+}
+
+.stat-card.inactive .stat-value {
+    color: #666;
+}
+
+/* Tables Section */
+.tables-section {
+    margin-bottom: 2rem;
+}
+
+.tables-section h2 {
+    color: #fff;
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+}
+
+.disabled-section {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 2rem;
+}
+
+.tables-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+}
+
+/* Table Card */
+.table-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 1.25rem;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.table-card.available {
+    border-color: rgba(16, 172, 132, 0.3);
+}
+
+.table-card.occupied {
+    border-color: rgba(255, 107, 107, 0.3);
+    background: rgba(255, 107, 107, 0.05);
+}
+
+.table-card.disabled {
+    border-color: rgba(100, 100, 100, 0.3);
+    opacity: 0.6;
+}
+
+.table-number {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 0.5rem;
+}
+
+.table-status {
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+}
+
+.table-status.available {
+    color: #10ac84;
+}
+
+.table-status.occupied {
+    color: #ff6b6b;
+}
+
+.table-status.disabled {
+    color: #666;
+}
+
+.table-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.5rem 0.75rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.action-btn.enable {
+    background: linear-gradient(135deg, #10ac84, #0a8967);
+    color: #fff;
+}
+
+.action-btn.disable {
+    background: rgba(255, 255, 255, 0.1);
+    color: #a0aec0;
+}
+
+.action-btn.disable:hover {
+    background: rgba(255, 107, 107, 0.2);
+    color: #ff6b6b;
+}
+
+.action-btn.free {
+    background: linear-gradient(135deg, #6c5ce7, #5a52d5);
+    color: #fff;
+}
+
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px;
+    color: #a0aec0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .admin-tables-page {
+        padding: 1rem;
+    }
+
+    .tables-container {
+        padding: 1.5rem;
+    }
+
+    .tables-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .tables-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    }
+}
