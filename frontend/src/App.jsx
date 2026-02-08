@@ -47,6 +47,19 @@ const OrderPersistenceChecker = () => {
         return;
       }
 
+      // Skip if in edit mode (editOrder or addItems query params)
+      const searchParams = new URLSearchParams(location.search);
+      if (searchParams.get('editOrder') || searchParams.get('addItems')) {
+        setChecked(true);
+        return;
+      }
+
+      // Skip on cart page (user might be in edit mode)
+      if (location.pathname === '/cart') {
+        setChecked(true);
+        return;
+      }
+
       const orderToken = localStorage.getItem('orderToken');
 
       if (!orderToken) {
@@ -74,7 +87,7 @@ const OrderPersistenceChecker = () => {
     };
 
     checkActiveOrder();
-  }, [navigate, location.pathname]);
+  }, [navigate, location.pathname, location.search]);
 
   // Don't render anything until check is complete
   if (!checked && !location.pathname.startsWith('/admin') && !location.pathname.startsWith('/order/')) {
