@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { menuAPI, ordersAPI } from '../services/api';
 import { useCart } from '../context/CartContext';
@@ -18,43 +18,60 @@ const Home = () => {
     const [loading, setLoading] = useState(true);
     const [activeCategory, setActiveCategory] = useState('All');
 
+    // Track if we're already processing edit mode to prevent double processing
+    const processingRef = useRef(false);
+
     // Check for edit/add mode from URL params
     useEffect(() => {
         const checkEditMode = async () => {
-            const editOrderId = searchParams.get('editOrder');
-            const addItemsId = searchParams.get('addItems');
+            // Get params directly from URL as fallback
+            const urlParams = new URLSearchParams(window.location.search);
+            const editOrderId = searchParams.get('editOrder') || urlParams.get('editOrder');
+            const addItemsId = searchParams.get('addItems') || urlParams.get('addItems');
 
-            if (editOrderId && !editMode) {
+            // Skip if already processing or already in edit mode for this order
+            if (processingRef.current) return;
+            if (editMode && (editMode.orderId === editOrderId || editMode.orderId === addItemsId)) return;
+
+            if (editOrderId) {
+                processingRef.current = true;
                 try {
                     const response = await ordersAPI.getOne(editOrderId);
                     if (response.data.success) {
                         startEditMode(editOrderId, 'edit', response.data.data);
                         toast.success('Edit mode: Modify your order and go to cart');
                         // Clear the URL param
-                        setSearchParams({});
+                        setSearchParams({}, { replace: true });
+                        window.history.replaceState({}, '', window.location.pathname);
                     }
                 } catch (error) {
                     toast.error('Could not load order for editing');
-                    setSearchParams({});
+                    setSearchParams({}, { replace: true });
+                } finally {
+                    processingRef.current = false;
                 }
-            } else if (addItemsId && !editMode) {
+            } else if (addItemsId) {
+                processingRef.current = true;
                 try {
                     const response = await ordersAPI.getOne(addItemsId);
                     if (response.data.success) {
                         startEditMode(addItemsId, 'add', response.data.data);
                         toast.success('Add items mode: Add new items and go to cart');
                         // Clear the URL param
-                        setSearchParams({});
+                        setSearchParams({}, { replace: true });
+                        window.history.replaceState({}, '', window.location.pathname);
                     }
                 } catch (error) {
                     toast.error('Could not load order');
-                    setSearchParams({});
+                    setSearchParams({}, { replace: true });
+                } finally {
+                    processingRef.current = false;
                 }
             }
         };
 
         checkEditMode();
-    }, [searchParams, editMode, startEditMode, setSearchParams]);
+    }, [searchParams, startEditMode, setSearchParams, editMode]);
 
     useEffect(() => {
         fetchMenu();
