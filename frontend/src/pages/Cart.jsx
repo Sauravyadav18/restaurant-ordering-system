@@ -4,7 +4,7 @@ import { useCart } from '../context/CartContext';
 import { ordersAPI, tablesAPI } from '../services/api';
 import CartItem from '../components/CartItem';
 import toast from 'react-hot-toast';
-import { FiShoppingBag, FiArrowLeft, FiUser } from 'react-icons/fi';
+import { FiShoppingBag, FiArrowLeft, FiUser, FiHome, FiPackage } from 'react-icons/fi';
 import './Cart.css';
 
 const Cart = () => {
@@ -13,6 +13,7 @@ const Cart = () => {
     const [loading, setLoading] = useState(false);
     const [selectedTable, setSelectedTable] = useState('');
     const [customerName, setCustomerName] = useState('');
+    const [orderType, setOrderType] = useState('Dine-In');
     const [availableTables, setAvailableTables] = useState([]);
     const [tablesLoading, setTablesLoading] = useState(true);
 
@@ -42,9 +43,9 @@ const Cart = () => {
             return;
         }
 
-        // Validate table selection
-        if (!selectedTable) {
-            toast.error('Please select a table');
+        // Validate table selection for Dine-In orders
+        if (orderType === 'Dine-In' && !selectedTable) {
+            toast.error('Please select a table for Dine-In orders');
             return;
         }
 
@@ -57,7 +58,7 @@ const Cart = () => {
 
         try {
             const orderData = {
-                tableNumber: parseInt(selectedTable),
+                orderType,
                 customerName: trimmedName,
                 items: cartItems.map((item) => ({
                     menuItem: item._id,
@@ -67,13 +68,25 @@ const Cart = () => {
                 }))
             };
 
+            // Add tableNumber only for Dine-In orders
+            if (orderType === 'Dine-In') {
+                orderData.tableNumber = parseInt(selectedTable);
+            }
+
             const response = await ordersAPI.create(orderData);
 
             if (response.data.success) {
-                setTableNumber(parseInt(selectedTable));
+                const order = response.data.data;
+
+                // Store order token in localStorage for persistence
+                localStorage.setItem('orderToken', order.orderToken);
+
+                if (orderType === 'Dine-In') {
+                    setTableNumber(parseInt(selectedTable));
+                }
                 clearCart();
                 toast.success('Order placed successfully!');
-                navigate(`/order/${response.data.data._id}`);
+                navigate(`/order/${order._id}`);
             }
         } catch (error) {
             toast.error(error.response?.data?.message || 'Failed to place order');
@@ -133,30 +146,60 @@ const Cart = () => {
                             />
                         </div>
 
-                        <div className="table-input-section">
-                            <label htmlFor="tableNumber">Select Table</label>
-                            {tablesLoading ? (
-                                <div className="table-loading">Loading tables...</div>
-                            ) : availableTables.length === 0 ? (
-                                <div className="no-tables-message">
-                                    No tables available at the moment. Please wait.
-                                </div>
-                            ) : (
-                                <select
-                                    id="tableNumber"
-                                    value={selectedTable}
-                                    onChange={(e) => setSelectedTable(e.target.value)}
-                                    className="table-select"
+                        <div className="order-type-section">
+                            <label>Order Type</label>
+                            <div className="order-type-options">
+                                <button
+                                    className={`order-type-btn ${orderType === 'Dine-In' ? 'active' : ''}`}
+                                    onClick={() => setOrderType('Dine-In')}
                                 >
-                                    <option value="">-- Select a table --</option>
-                                    {availableTables.map((table) => (
-                                        <option key={table._id} value={table.tableNumber}>
-                                            Table {table.tableNumber}
-                                        </option>
-                                    ))}
-                                </select>
-                            )}
+                                    <FiHome /> Dine-In
+                                </button>
+                                <button
+                                    className={`order-type-btn ${orderType === 'Parcel' ? 'active' : ''}`}
+                                    onClick={() => {
+                                        setOrderType('Parcel');
+                                        setSelectedTable('');
+                                    }}
+                                >
+                                    <FiPackage /> Parcel
+                                </button>
+                            </div>
                         </div>
+
+                        {orderType === 'Dine-In' && (
+                            <div className="table-input-section">
+                                <label htmlFor="tableNumber">Select Table</label>
+                                {tablesLoading ? (
+                                    <div className="table-loading">Loading tables...</div>
+                                ) : availableTables.length === 0 ? (
+                                    <div className="no-tables-message">
+                                        No tables available at the moment. Please wait.
+                                    </div>
+                                ) : (
+                                    <select
+                                        id="tableNumber"
+                                        value={selectedTable}
+                                        onChange={(e) => setSelectedTable(e.target.value)}
+                                        className="table-select"
+                                    >
+                                        <option value="">-- Select a table --</option>
+                                        {availableTables.map((table) => (
+                                            <option key={table._id} value={table.tableNumber}>
+                                                Table {table.tableNumber}
+                                            </option>
+                                        ))}
+                                    </select>
+                                )}
+                            </div>
+                        )}
+
+                        {orderType === 'Parcel' && (
+                            <div className="parcel-notice">
+                                <FiPackage />
+                                <span>Your order will be packed for takeaway</span>
+                            </div>
+                        )}
 
                         <div className="summary-row">
                             <span>Subtotal</span>
@@ -174,7 +217,7 @@ const Cart = () => {
                         <button
                             className="place-order-btn"
                             onClick={handlePlaceOrder}
-                            disabled={loading || tablesLoading || availableTables.length === 0}
+                            disabled={loading || (orderType === 'Dine-In' && (tablesLoading || availableTables.length === 0))}
                         >
                             {loading ? 'Placing Order...' : 'Place Order'}
                         </button>

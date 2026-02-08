@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const crypto = require('crypto');
 
 const orderItemSchema = new mongoose.Schema({
     menuItem: {
@@ -22,11 +23,20 @@ const orderItemSchema = new mongoose.Schema({
 }, { _id: false });
 
 const orderSchema = new mongoose.Schema({
+    orderToken: {
+        type: String,
+        unique: true,
+        required: true
+    },
+    orderType: {
+        type: String,
+        enum: ['Dine-In', 'Parcel'],
+        required: [true, 'Order type is required']
+    },
     tableNumber: {
         type: Number,
-        required: [true, 'Table number is required'],
         min: [1, 'Table number must be at least 1'],
-        max: [20, 'Table number must be at most 20']
+        // Required only for Dine-In orders (validated in controller)
     },
     customerName: {
         type: String,
@@ -66,5 +76,10 @@ const orderSchema = new mongoose.Schema({
 }, {
     timestamps: true
 });
+
+// Generate unique order token before saving
+orderSchema.statics.generateToken = function () {
+    return crypto.randomBytes(16).toString('hex');
+};
 
 module.exports = mongoose.model('Order', orderSchema);

@@ -30,17 +30,24 @@ const getDateFilter = (filter) => {
 // Create new order (Customer)
 exports.createOrder = async (req, res) => {
     try {
-        const { tableNumber, customerName, items } = req.body;
+        const { tableNumber, customerName, items, orderType } = req.body;
 
-        // Validate input
-        if (!tableNumber || !customerName || !items || items.length === 0) {
+        // Validate orderType
+        if (!orderType || !['Dine-In', 'Parcel'].includes(orderType)) {
             return res.status(400).json({
                 success: false,
-                message: 'Please provide table number, customer name, and at least one item'
+                message: 'Please select order type (Dine-In or Parcel)'
             });
         }
 
         // Validate customerName
+        if (!customerName) {
+            return res.status(400).json({
+                success: false,
+                message: 'Customer name is required'
+            });
+        }
+
         const trimmedName = customerName.trim();
         if (trimmedName.length < 2) {
             return res.status(400).json({
@@ -49,28 +56,47 @@ exports.createOrder = async (req, res) => {
             });
         }
 
-        // Check if table exists and is available
-        const table = await Table.findOne({ tableNumber });
-
-        if (!table) {
+        // Validate items
+        if (!items || items.length === 0) {
             return res.status(400).json({
                 success: false,
-                message: 'Table not found'
+                message: 'Please add at least one item to your order'
             });
         }
 
-        if (!table.isActive) {
-            return res.status(400).json({
-                success: false,
-                message: 'This table is currently inactive'
-            });
-        }
+        let table = null;
 
-        if (table.isOccupied) {
-            return res.status(400).json({
-                success: false,
-                message: 'This table is already occupied. Please select another table.'
-            });
+        // For Dine-In orders, validate table
+        if (orderType === 'Dine-In') {
+            if (!tableNumber) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Please select a table for Dine-In orders'
+                });
+            }
+
+            table = await Table.findOne({ tableNumber });
+
+            if (!table) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Table not found'
+                });
+            }
+
+            if (!table.isActive) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'This table is currently inactive'
+                });
+            }
+
+            if (table.isOccupied) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'This table is already occupied. Please select another table.'
+                });
+            }
         }
 
         // Calculate total amount
@@ -78,27 +104,42 @@ exports.createOrder = async (req, res) => {
             return sum + (item.price * item.quantity);
         }, 0);
 
+        // Generate unique order token
+        const orderToken = Order.generateToken();
+
         // Create order
-        const order = await Order.create({
-            tableNumber,
+        const orderData = {
+            orderToken,
+            orderType,
             customerName: trimmedName,
             items,
             totalAmount,
             status: 'Pending',
             paymentStatus: 'Unpaid',
             isClosed: false
-        });
+        };
 
-        // Lock the table
-        table.isOccupied = true;
-        table.currentOrder = order._id;
-        await table.save();
+        // Add tableNumber only for Dine-In orders
+        if (orderType === 'Dine-In') {
+            orderData.tableNumber = tableNumber;
+        }
+
+        const order = await Order.create(orderData);
+
+        // Lock the table for Dine-In orders
+        if (orderType === 'Dine-In' && table) {
+            table.isOccupied = true;
+            table.currentOrder = order._id;
+            await table.save();
+        }
 
         // Emit socket events for real-time update
         const io = req.app.get('io');
         if (io) {
             io.emit('new-order', order);
-            io.emit('table-occupied', { tableNumber, orderId: order._id });
+            if (orderType === 'Dine-In') {
+                io.emit('table-occupied', { tableNumber, orderId: order._id });
+            }
         }
 
         res.status(201).json({
@@ -113,6 +154,171 @@ exports.createOrder = async (req, res) => {
                 message: messages.join(', ')
             });
         }
+        res.status(500).json({
+            success: false,
+            message: 'Server error',
+            error: error.message
+        });
+    }
+};
+
+// Get order by token (Customer - for persistence)
+exports.getOrderByToken = async (req, res) => {
+    try {
+        const order = await Order.findOne({ orderToken: req.params.token });
+
+        if (!order) {
+            return res.status(404).json({
+                success: false,
+                message: 'Order not found'
+            });
+        }
+
+        res.json({
+            success: true,
+            data: order
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Server error',
+            error: error.message
+        });
+    }
+};
+
+// Update order (Customer - Pending status only)
+exports.updateOrder = async (req, res) => {
+    try {
+        const order = await Order.findById(req.params.id);
+
+        if (!order) {
+            return res.status(404).json({
+                success: false,
+                message: 'Order not found'
+            });
+        }
+
+        // Only allow full edit if status is Pending
+        if (order.status !== 'Pending') {
+            return res.status(400).json({
+                success: false,
+                message: 'Full order editing is only allowed when order is Pending'
+            });
+        }
+
+        if (order.isClosed) {
+            return res.status(400).json({
+                success: false,
+                message: 'Cannot edit a closed order'
+            });
+        }
+
+        const { items } = req.body;
+
+        if (!items || items.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'Order must have at least one item'
+            });
+        }
+
+        // Calculate new total
+        const totalAmount = items.reduce((sum, item) => {
+            return sum + (item.price * item.quantity);
+        }, 0);
+
+        order.items = items;
+        order.totalAmount = totalAmount;
+        await order.save();
+
+        // Emit socket event
+        const io = req.app.get('io');
+        if (io) {
+            io.emit('order-updated', order);
+        }
+
+        res.json({
+            success: true,
+            message: 'Order updated successfully',
+            data: order
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Server error',
+            error: error.message
+        });
+    }
+};
+
+// Add items to order (Customer - Preparing/Served status)
+exports.addItemsToOrder = async (req, res) => {
+    try {
+        const order = await Order.findById(req.params.id);
+
+        if (!order) {
+            return res.status(404).json({
+                success: false,
+                message: 'Order not found'
+            });
+        }
+
+        if (order.paymentStatus === 'Paid') {
+            return res.status(400).json({
+                success: false,
+                message: 'Cannot add items to a paid order'
+            });
+        }
+
+        if (order.isClosed) {
+            return res.status(400).json({
+                success: false,
+                message: 'Cannot add items to a closed order'
+            });
+        }
+
+        const { items: newItems } = req.body;
+
+        if (!newItems || newItems.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'Please provide items to add'
+            });
+        }
+
+        // Add new items to existing items
+        for (const newItem of newItems) {
+            const existingItem = order.items.find(
+                item => item.menuItem.toString() === newItem.menuItem
+            );
+
+            if (existingItem) {
+                existingItem.quantity += newItem.quantity;
+            } else {
+                order.items.push(newItem);
+            }
+        }
+
+        // Recalculate total
+        order.totalAmount = order.items.reduce((sum, item) => {
+            return sum + (item.price * item.quantity);
+        }, 0);
+
+        await order.save();
+
+        // Emit socket event
+        const io = req.app.get('io');
+        if (io) {
+            io.emit('order-updated', order);
+        }
+
+        res.json({
+            success: true,
+            message: 'Items added successfully',
+            data: order
+        });
+    } catch (error) {
         res.status(500).json({
             success: false,
             message: 'Server error',
@@ -253,17 +459,19 @@ exports.updatePaymentStatus = async (req, res) => {
         order.isClosed = true;
         await order.save();
 
-        // Unlock the table
-        const table = await Table.findOne({ tableNumber: order.tableNumber });
-        if (table) {
-            table.isOccupied = false;
-            table.currentOrder = null;
-            await table.save();
+        // Unlock the table (only for Dine-In orders)
+        if (order.orderType === 'Dine-In' && order.tableNumber) {
+            const table = await Table.findOne({ tableNumber: order.tableNumber });
+            if (table) {
+                table.isOccupied = false;
+                table.currentOrder = null;
+                await table.save();
 
-            // Emit socket event for table available
-            const io = req.app.get('io');
-            if (io) {
-                io.emit('table-available', { tableNumber: order.tableNumber });
+                // Emit socket event for table available
+                const io = req.app.get('io');
+                if (io) {
+                    io.emit('table-available', { tableNumber: order.tableNumber });
+                }
             }
         }
 

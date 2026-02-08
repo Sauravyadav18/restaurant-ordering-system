@@ -1,4 +1,4 @@
-import { FiClock, FiUser, FiDollarSign, FiCheck } from 'react-icons/fi';
+import { FiClock, FiUser, FiDollarSign, FiCheck, FiHome, FiPackage, FiCalendar } from 'react-icons/fi';
 import './OrderCard.css';
 
 const OrderCard = ({ order, onStatusChange, onPaymentReceived, showActions = true, isClosed = false }) => {
@@ -9,12 +9,16 @@ const OrderCard = ({ order, onStatusChange, onPaymentReceived, showActions = tru
     };
 
     const formatDate = (date) => {
-        return new Date(date).toLocaleString('en-IN', {
+        const d = new Date(date);
+        const options = {
             day: 'numeric',
-            month: 'short',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
+            month: 'long',
+            year: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+        };
+        return d.toLocaleString('en-IN', options).replace(',', ' –');
     };
 
     return (
@@ -39,17 +43,26 @@ const OrderCard = ({ order, onStatusChange, onPaymentReceived, showActions = tru
                         </span>
                     )}
                 </div>
-                <div className="table-info">
-                    <span className="table-badge">Table {order.tableNumber}</span>
+                <div className="order-type-info">
+                    <span className={`order-type-badge ${order.orderType?.toLowerCase() || 'dine-in'}`}>
+                        {order.orderType === 'Parcel' ? <FiPackage /> : <FiHome />}
+                        {order.orderType || 'Dine-In'}
+                    </span>
+                    {order.orderType === 'Dine-In' && order.tableNumber && (
+                        <span className="table-badge">Table {order.tableNumber}</span>
+                    )}
                 </div>
             </div>
 
-            {order.customerName && (
-                <div className="customer-info">
-                    <FiUser />
-                    <span className="customer-name">{order.customerName}</span>
-                </div>
-            )}
+            <div className="customer-info">
+                <FiUser />
+                <span className="customer-name">{order.customerName || 'Customer'}</span>
+            </div>
+
+            <div className="order-date-info">
+                <FiCalendar />
+                <span>{formatDate(order.createdAt)}</span>
+            </div>
 
             <div className="order-items">
                 {order.items.map((item, index) => (
@@ -62,10 +75,6 @@ const OrderCard = ({ order, onStatusChange, onPaymentReceived, showActions = tru
             </div>
 
             <div className="order-footer">
-                <div className="order-time">
-                    <FiClock />
-                    <span>{formatDate(order.createdAt)}</span>
-                </div>
                 <div className="order-total">
                     Total: <span>₹{order.totalAmount}</span>
                 </div>

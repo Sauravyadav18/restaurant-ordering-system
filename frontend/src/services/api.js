@@ -39,6 +39,9 @@ export const ordersAPI = {
     create: (orderData) => api.post('/orders', orderData),
     getAll: (params = {}) => api.get('/orders', { params }),
     getOne: (id) => api.get(`/orders/${id}`),
+    getByToken: (token) => api.get(`/orders/token/${token}`),
+    updateOrder: (id, data) => api.put(`/orders/${id}`, data),
+    addItems: (id, items) => api.put(`/orders/${id}/add-items`, { items }),
     updateStatus: (id, status) => api.patch(`/orders/${id}`, { status }),
     updatePayment: (id) => api.patch(`/orders/${id}/payment`)
 };
@@ -53,5 +56,3 @@ export const tablesAPI = {
 };
 
 export default api;
-
-

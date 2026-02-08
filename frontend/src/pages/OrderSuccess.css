@@ -55,6 +55,111 @@
     font-size: 1.1rem;
 }
 
+/* Order Meta */
+.order-meta {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.order-type-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 25px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.order-type-badge.dine-in {
+    background: rgba(16, 172, 132, 0.15);
+    color: #10ac84;
+    border: 1px solid rgba(16, 172, 132, 0.3);
+}
+
+.order-type-badge.parcel {
+    background: rgba(254, 202, 87, 0.15);
+    color: #feca57;
+    border: 1px solid rgba(254, 202, 87, 0.3);
+}
+
+.order-date {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #a0aec0;
+    font-size: 0.9rem;
+}
+
+/* Payment Complete Badge */
+.payment-complete-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: rgba(16, 172, 132, 0.15);
+    border: 1px solid rgba(16, 172, 132, 0.3);
+    border-radius: 12px;
+    color: #10ac84;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+/* Customer Name in Details */
+.customer-name {
+    color: #a0aec0;
+    font-size: 0.9rem;
+}
+
+/* Order Actions */
+.order-actions {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.edit-order-btn,
+.add-items-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.edit-order-btn {
+    background: rgba(254, 202, 87, 0.2);
+    color: #feca57;
+    border: 2px solid rgba(254, 202, 87, 0.3);
+}
+
+.edit-order-btn:hover {
+    background: rgba(254, 202, 87, 0.3);
+    transform: translateY(-2px);
+}
+
+.add-items-btn {
+    background: linear-gradient(135deg, #6c5ce7, #5a52d5);
+    color: white;
+}
+
+.add-items-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(108, 92, 231, 0.4);
+}
+
 /* Progress Steps */
 .order-progress {
     display: flex;

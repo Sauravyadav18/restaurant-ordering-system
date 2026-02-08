@@ -40,12 +40,12 @@
     color: #1a1a2e;
 }
 
-.table-info {
+.table-info,
+.order-type-info {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    color: #a0aec0;
-    font-size: 0.9rem;
+    flex-wrap: wrap;
 }
 
 .table-badge {
@@ -54,6 +54,44 @@
     border-radius: 20px;
     font-weight: 600;
     color: #fff;
+    font-size: 0.8rem;
+}
+
+.order-type-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.order-type-badge.dine-in {
+    background: rgba(16, 172, 132, 0.15);
+    color: #10ac84;
+}
+
+.order-type-badge.parcel {
+    background: rgba(254, 202, 87, 0.15);
+    color: #feca57;
+}
+
+/* Order Date Info */
+.order-date-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 1rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    color: #a0aec0;
+    font-size: 0.85rem;
+}
+
+.order-date-info svg {
+    color: #feca57;
 }
 
 /* Customer Info */

@@ -1,7 +1,9 @@
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { BrowserRouter, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
+import { ordersAPI } from './services/api';
 import Navbar from './components/Navbar';
 import FloatingCart from './components/FloatingCart';
 import Home from './pages/Home';
@@ -25,6 +27,67 @@ const FloatingCartWrapper = () => {
   return <FloatingCart />;
 };
 
+// Order persistence checker
+const OrderPersistenceChecker = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [checked, setChecked] = useState(false);
+
+  useEffect(() => {
+    const checkActiveOrder = async () => {
+      // Skip check for admin pages
+      if (location.pathname.startsWith('/admin')) {
+        setChecked(true);
+        return;
+      }
+
+      // Skip if already on order page
+      if (location.pathname.startsWith('/order/')) {
+        setChecked(true);
+        return;
+      }
+
+      const orderToken = localStorage.getItem('orderToken');
+
+      if (!orderToken) {
+        setChecked(true);
+        return;
+      }
+
+      try {
+        const response = await ordersAPI.getByToken(orderToken);
+        const order = response.data.data;
+
+        if (order && !order.isClosed) {
+          // Redirect to order status page
+          navigate(`/order/${order._id}`, { replace: true });
+        } else {
+          // Order is closed, clear token
+          localStorage.removeItem('orderToken');
+        }
+      } catch (error) {
+        // Order not found or error, clear token
+        localStorage.removeItem('orderToken');
+      } finally {
+        setChecked(true);
+      }
+    };
+
+    checkActiveOrder();
+  }, [navigate, location.pathname]);
+
+  // Don't render anything until check is complete
+  if (!checked && !location.pathname.startsWith('/admin') && !location.pathname.startsWith('/order/')) {
+    return (
+      <div className="persistence-loading">
+        <div className="loader"></div>
+      </div>
+    );
+  }
+
+  return null;
+};
+
 function App() {
   return (
     <AuthProvider>
@@ -32,6 +95,7 @@ function App() {
         <BrowserRouter>
           <div className="app">
             <Navbar />
+            <OrderPersistenceChecker />
             <main className="main-content">
               <Routes>
                 <Route path="/" element={<Home />} />

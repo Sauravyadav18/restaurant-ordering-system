@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ordersAPI } from '../services/api';
 import { socket, connectSocket, joinOrderRoom, leaveOrderRoom } from '../services/socket';
-import { FiCheck, FiClock, FiHome } from 'react-icons/fi';
+import { FiCheck, FiClock, FiHome, FiEdit2, FiPlus, FiPackage, FiCalendar } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 import './OrderSuccess.css';
 
@@ -22,12 +22,24 @@ const OrderSuccess = () => {
             if (updatedOrder._id === orderId) {
                 setOrder(updatedOrder);
                 toast.success(`Order status updated: ${updatedOrder.status}`);
+
+                // If order is closed, clear the token
+                if (updatedOrder.isClosed) {
+                    localStorage.removeItem('orderToken');
+                }
+            }
+        });
+
+        socket.on('order-closed', (closedOrder) => {
+            if (closedOrder._id === orderId) {
+                localStorage.removeItem('orderToken');
             }
         });
 
         return () => {
             leaveOrderRoom(orderId);
             socket.off('order-updated');
+            socket.off('order-closed');
         };
     }, [orderId]);
 
@@ -35,11 +47,29 @@ const OrderSuccess = () => {
         try {
             const response = await ordersAPI.getOne(orderId);
             setOrder(response.data.data);
+
+            // If order is closed, clear the token
+            if (response.data.data.isClosed) {
+                localStorage.removeItem('orderToken');
+            }
         } catch (error) {
             toast.error('Failed to load order');
         } finally {
             setLoading(false);
         }
+    };
+
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        const options = {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+        };
+        return date.toLocaleString('en-IN', options).replace(',', ' –');
     };
 
     const getStatusStep = (status) => {
@@ -49,6 +79,16 @@ const OrderSuccess = () => {
             case 'Served': return 3;
             default: return 1;
         }
+    };
+
+    const handleEditOrder = () => {
+        // Navigate to menu with edit mode
+        navigate('/?editOrder=' + orderId);
+    };
+
+    const handleAddMoreItems = () => {
+        // Navigate to menu with add items mode
+        navigate('/?addItems=' + orderId);
     };
 
     if (loading) {
@@ -74,6 +114,8 @@ const OrderSuccess = () => {
     }
 
     const currentStep = getStatusStep(order.status);
+    const canEdit = order.status === 'Pending' && order.paymentStatus !== 'Paid' && !order.isClosed;
+    const canAddItems = ['Preparing', 'Served'].includes(order.status) && order.paymentStatus !== 'Paid' && !order.isClosed;
 
     return (
         <div className="order-success-page">
@@ -84,6 +126,17 @@ const OrderSuccess = () => {
                     </div>
                     <h1>Order Placed Successfully!</h1>
                     <p className="order-id">Order #{order._id.slice(-6).toUpperCase()}</p>
+                </div>
+
+                <div className="order-meta">
+                    <div className={`order-type-badge ${order.orderType?.toLowerCase() || 'dine-in'}`}>
+                        {order.orderType === 'Parcel' ? <FiPackage /> : <FiHome />}
+                        {order.orderType || 'Dine-In'}
+                    </div>
+                    <div className="order-date">
+                        <FiCalendar />
+                        {formatDate(order.createdAt)}
+                    </div>
                 </div>
 
                 <div className="order-progress">
@@ -107,10 +160,21 @@ const OrderSuccess = () => {
                     </div>
                 </div>
 
+                {order.paymentStatus === 'Paid' && (
+                    <div className="payment-complete-badge">
+                        <FiCheck /> Payment Complete - Thank You!
+                    </div>
+                )}
+
                 <div className="order-details-card">
                     <div className="details-header">
-                        <h3>Order Details</h3>
-                        <span className="table-badge">Table {order.tableNumber}</span>
+                        <div>
+                            <h3>Order Details</h3>
+                            <span className="customer-name">{order.customerName}</span>
+                        </div>
+                        {order.orderType === 'Dine-In' && order.tableNumber && (
+                            <span className="table-badge">Table {order.tableNumber}</span>
+                        )}
                     </div>
 
                     <div className="order-items-list">
@@ -128,6 +192,22 @@ const OrderSuccess = () => {
                         <span className="total-amount">₹{order.totalAmount}</span>
                     </div>
                 </div>
+
+                {/* Modification Buttons */}
+                {(canEdit || canAddItems) && !order.isClosed && (
+                    <div className="order-actions">
+                        {canEdit && (
+                            <button className="edit-order-btn" onClick={handleEditOrder}>
+                                <FiEdit2 /> Edit Order
+                            </button>
+                        )}
+                        {canAddItems && (
+                            <button className="add-items-btn" onClick={handleAddMoreItems}>
+                                <FiPlus /> Add More Items
+                            </button>
+                        )}
+                    </div>
+                )}
 
                 <div className="realtime-notice">
                     <FiClock />
