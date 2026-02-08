@@ -11,6 +11,7 @@ const socketHandler = require('./socket/socketHandler');
 const authRoutes = require('./routes/authRoutes');
 const menuRoutes = require('./routes/menuRoutes');
 const orderRoutes = require('./routes/orderRoutes');
+const tableRoutes = require('./routes/tableRoutes');
 
 // Initialize express app
 const app = express();
@@ -51,6 +52,7 @@ connectDB();
 app.use('/api/auth', authRoutes);
 app.use('/api/menu', menuRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/tables', tableRoutes);
 
 // 404 handler - catch all unmatched routes
 app.use((req, res) => {

@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
-import { ordersAPI } from '../services/api';
+import { ordersAPI, tablesAPI } from '../services/api';
 import CartItem from '../components/CartItem';
 import toast from 'react-hot-toast';
 import { FiShoppingBag, FiArrowLeft, FiUser } from 'react-icons/fi';
@@ -9,10 +9,30 @@ import './Cart.css';
 
 const Cart = () => {
     const navigate = useNavigate();
-    const { cartItems, tableNumber, setTableNumber, getCartTotal, clearCart } = useCart();
+    const { cartItems, setTableNumber, getCartTotal, clearCart } = useCart();
     const [loading, setLoading] = useState(false);
-    const [tableInput, setTableInput] = useState(tableNumber || '');
+    const [selectedTable, setSelectedTable] = useState('');
     const [customerName, setCustomerName] = useState('');
+    const [availableTables, setAvailableTables] = useState([]);
+    const [tablesLoading, setTablesLoading] = useState(true);
+
+    // Fetch available tables
+    useEffect(() => {
+        const fetchTables = async () => {
+            try {
+                const response = await tablesAPI.getAvailable();
+                if (response.data.success) {
+                    setAvailableTables(response.data.data);
+                }
+            } catch (error) {
+                console.error('Error fetching tables:', error);
+                toast.error('Failed to load available tables');
+            } finally {
+                setTablesLoading(false);
+            }
+        };
+        fetchTables();
+    }, []);
 
     const handlePlaceOrder = async () => {
         // Validate customer name
@@ -22,10 +42,9 @@ const Cart = () => {
             return;
         }
 
-        // Validate table number
-        const tableNum = parseInt(tableInput);
-        if (!tableInput || tableNum < 1 || tableNum > 20) {
-            toast.error('Please enter a valid table number (1-20)');
+        // Validate table selection
+        if (!selectedTable) {
+            toast.error('Please select a table');
             return;
         }
 
@@ -38,7 +57,7 @@ const Cart = () => {
 
         try {
             const orderData = {
-                tableNumber: tableNum,
+                tableNumber: parseInt(selectedTable),
                 customerName: trimmedName,
                 items: cartItems.map((item) => ({
                     menuItem: item._id,
@@ -51,7 +70,7 @@ const Cart = () => {
             const response = await ordersAPI.create(orderData);
 
             if (response.data.success) {
-                setTableNumber(tableNum);
+                setTableNumber(parseInt(selectedTable));
                 clearCart();
                 toast.success('Order placed successfully!');
                 navigate(`/order/${response.data.data._id}`);
@@ -115,16 +134,28 @@ const Cart = () => {
                         </div>
 
                         <div className="table-input-section">
-                            <label htmlFor="tableNumber">Table Number</label>
-                            <input
-                                type="number"
-                                id="tableNumber"
-                                min="1"
-                                max="20"
-                                placeholder="Enter table number (1-20)"
-                                value={tableInput}
-                                onChange={(e) => setTableInput(e.target.value)}
-                            />
+                            <label htmlFor="tableNumber">Select Table</label>
+                            {tablesLoading ? (
+                                <div className="table-loading">Loading tables...</div>
+                            ) : availableTables.length === 0 ? (
+                                <div className="no-tables-message">
+                                    No tables available at the moment. Please wait.
+                                </div>
+                            ) : (
+                                <select
+                                    id="tableNumber"
+                                    value={selectedTable}
+                                    onChange={(e) => setSelectedTable(e.target.value)}
+                                    className="table-select"
+                                >
+                                    <option value="">-- Select a table --</option>
+                                    {availableTables.map((table) => (
+                                        <option key={table._id} value={table.tableNumber}>
+                                            Table {table.tableNumber}
+                                        </option>
+                                    ))}
+                                </select>
+                            )}
                         </div>
 
                         <div className="summary-row">
@@ -143,7 +174,7 @@ const Cart = () => {
                         <button
                             className="place-order-btn"
                             onClick={handlePlaceOrder}
-                            disabled={loading}
+                            disabled={loading || tablesLoading || availableTables.length === 0}
                         >
                             {loading ? 'Placing Order...' : 'Place Order'}
                         </button>

@@ -1,8 +1,9 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
 import Navbar from './components/Navbar';
+import FloatingCart from './components/FloatingCart';
 import Home from './pages/Home';
 import Cart from './pages/Cart';
 import OrderSuccess from './pages/OrderSuccess';
@@ -10,6 +11,18 @@ import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminOrders from './pages/AdminOrders';
 import './App.css';
+
+// Wrapper to conditionally show FloatingCart
+const FloatingCartWrapper = () => {
+  const location = useLocation();
+  const hideOnPaths = ['/cart', '/admin', '/admin/login', '/admin/orders'];
+
+  // Hide floating cart on cart page and admin pages
+  const shouldHide = hideOnPaths.some(path => location.pathname.startsWith(path));
+
+  if (shouldHide) return null;
+  return <FloatingCart />;
+};
 
 function App() {
   return (
@@ -28,6 +41,7 @@ function App() {
                 <Route path="/admin/orders" element={<AdminOrders />} />
               </Routes>
             </main>
+            <FloatingCartWrapper />
           </div>
           <Toaster
             position="top-right"

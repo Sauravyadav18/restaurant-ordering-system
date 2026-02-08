@@ -1,4 +1,5 @@
 const Order = require('../models/Order');
+const Table = require('../models/Table');
 
 // Helper function to get date filter
 const getDateFilter = (filter) => {
@@ -48,11 +49,27 @@ exports.createOrder = async (req, res) => {
             });
         }
 
-        // Validate tableNumber range
-        if (tableNumber < 1 || tableNumber > 20) {
+        // Check if table exists and is available
+        const table = await Table.findOne({ tableNumber });
+
+        if (!table) {
             return res.status(400).json({
                 success: false,
-                message: 'Table number must be between 1 and 20'
+                message: 'Table not found'
+            });
+        }
+
+        if (!table.isActive) {
+            return res.status(400).json({
+                success: false,
+                message: 'This table is currently inactive'
+            });
+        }
+
+        if (table.isOccupied) {
+            return res.status(400).json({
+                success: false,
+                message: 'This table is already occupied. Please select another table.'
             });
         }
 
@@ -61,6 +78,7 @@ exports.createOrder = async (req, res) => {
             return sum + (item.price * item.quantity);
         }, 0);
 
+        // Create order
         const order = await Order.create({
             tableNumber,
             customerName: trimmedName,
@@ -71,10 +89,16 @@ exports.createOrder = async (req, res) => {
             isClosed: false
         });
 
-        // Emit socket event for real-time update
+        // Lock the table
+        table.isOccupied = true;
+        table.currentOrder = order._id;
+        await table.save();
+
+        // Emit socket events for real-time update
         const io = req.app.get('io');
         if (io) {
             io.emit('new-order', order);
+            io.emit('table-occupied', { tableNumber, orderId: order._id });
         }
 
         res.status(201).json({
@@ -228,6 +252,20 @@ exports.updatePaymentStatus = async (req, res) => {
         order.paymentStatus = 'Paid';
         order.isClosed = true;
         await order.save();
+
+        // Unlock the table
+        const table = await Table.findOne({ tableNumber: order.tableNumber });
+        if (table) {
+            table.isOccupied = false;
+            table.currentOrder = null;
+            await table.save();
+
+            // Emit socket event for table available
+            const io = req.app.get('io');
+            if (io) {
+                io.emit('table-available', { tableNumber: order.tableNumber });
+            }
+        }
 
         // Emit socket event for real-time update
         const io = req.app.get('io');

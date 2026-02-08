@@ -2,6 +2,7 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 const User = require('./models/User');
 const Menu = require('./models/Menu');
+const Table = require('./models/Table');
 
 const seedData = async () => {
     try {
@@ -11,6 +12,7 @@ const seedData = async () => {
         // Clear existing data
         await User.deleteMany({});
         await Menu.deleteMany({});
+        await Table.deleteMany({});
         console.log('Cleared existing data');
 
         // Create admin user
@@ -163,6 +165,18 @@ const seedData = async () => {
 
         await Menu.insertMany(menuItems);
         console.log(`${menuItems.length} menu items created with images`);
+
+        // Create tables (1-20)
+        const tables = [];
+        for (let i = 1; i <= 20; i++) {
+            tables.push({
+                tableNumber: i,
+                isActive: true,
+                isOccupied: false
+            });
+        }
+        await Table.insertMany(tables);
+        console.log('20 tables created');
 
         console.log('\n✅ Database seeded successfully!');
         console.log('\nAdmin Login Credentials:');

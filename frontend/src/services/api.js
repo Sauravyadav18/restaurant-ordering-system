@@ -43,4 +43,11 @@ export const ordersAPI = {
     updatePayment: (id) => api.patch(`/orders/${id}/payment`)
 };
 
+// Tables API
+export const tablesAPI = {
+    getAvailable: () => api.get('/tables/available'),
+    getAll: () => api.get('/tables')
+};
+
 export default api;
+
