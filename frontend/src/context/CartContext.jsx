@@ -20,6 +20,9 @@ export const CartProvider = ({ children }) => {
         return saved ? parseInt(saved) : null;
     });
 
+    // Edit mode state
+    const [editMode, setEditMode] = useState(null); // { orderId, mode: 'edit' | 'add', orderData }
+
     // Save cart to localStorage
     useEffect(() => {
         localStorage.setItem('cart', JSON.stringify(cartItems));
@@ -63,6 +66,7 @@ export const CartProvider = ({ children }) => {
     const clearCart = () => {
         setCartItems([]);
         localStorage.removeItem('cart');
+        setEditMode(null);
     };
 
     const getCartTotal = () => {
@@ -71,6 +75,33 @@ export const CartProvider = ({ children }) => {
 
     const getCartCount = () => {
         return cartItems.reduce((sum, item) => sum + item.quantity, 0);
+    };
+
+    // Set cart items from existing order (for edit mode)
+    const setCartFromOrder = (orderItems) => {
+        const formattedItems = orderItems.map(item => ({
+            _id: item.menuItem,
+            name: item.name,
+            price: item.price,
+            quantity: item.quantity
+        }));
+        setCartItems(formattedItems);
+    };
+
+    // Start edit mode
+    const startEditMode = (orderId, mode, orderData) => {
+        setEditMode({ orderId, mode, orderData });
+        if (mode === 'edit') {
+            // Pre-populate cart with order items
+            setCartFromOrder(orderData.items);
+        }
+        // For 'add' mode, keep cart empty for adding new items
+    };
+
+    // Cancel edit mode
+    const cancelEditMode = () => {
+        setEditMode(null);
+        clearCart();
     };
 
     return (
@@ -84,7 +115,12 @@ export const CartProvider = ({ children }) => {
                 updateQuantity,
                 clearCart,
                 getCartTotal,
-                getCartCount
+                getCartCount,
+                editMode,
+                setEditMode,
+                startEditMode,
+                cancelEditMode,
+                setCartFromOrder
             }}
         >
             {children}
