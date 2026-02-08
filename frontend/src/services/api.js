@@ -48,7 +48,8 @@ export const tablesAPI = {
     getAvailable: () => api.get('/tables/available'),
     getAll: () => api.get('/tables'),
     updateStatus: (id, data) => api.patch(`/tables/${id}`, data),
-    freeTable: (id) => api.patch(`/tables/${id}/free`)
+    freeTable: (id) => api.patch(`/tables/${id}/free`),
+    setTotalTables: (totalTables) => api.post('/tables/set-total', { totalTables })
 };
 
 export default api;

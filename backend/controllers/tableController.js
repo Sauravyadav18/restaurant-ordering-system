@@ -159,3 +159,66 @@ exports.freeTable = async (req, res) => {
         });
     }
 };
+
+// Set total number of tables (admin only)
+exports.setTotalTables = async (req, res) => {
+    try {
+        const { totalTables } = req.body;
+
+        if (!totalTables || totalTables < 1 || totalTables > 100) {
+            return res.status(400).json({
+                success: false,
+                message: 'Total tables must be between 1 and 100'
+            });
+        }
+
+        const currentTables = await Table.find().sort({ tableNumber: 1 });
+        const currentCount = currentTables.length;
+
+        if (totalTables > currentCount) {
+            // Add new tables
+            const newTables = [];
+            for (let i = currentCount + 1; i <= totalTables; i++) {
+                newTables.push({
+                    tableNumber: i,
+                    isActive: true,
+                    isOccupied: false
+                });
+            }
+            await Table.insertMany(newTables);
+        } else if (totalTables < currentCount) {
+            // Check if any tables to be removed are occupied
+            const tablesToRemove = currentTables.slice(totalTables);
+            const occupiedTables = tablesToRemove.filter(t => t.isOccupied);
+
+            if (occupiedTables.length > 0) {
+                return res.status(400).json({
+                    success: false,
+                    message: `Cannot remove tables ${occupiedTables.map(t => t.tableNumber).join(', ')} as they are currently occupied`
+                });
+            }
+
+            // Remove extra tables
+            const idsToRemove = tablesToRemove.map(t => t._id);
+            await Table.deleteMany({ _id: { $in: idsToRemove } });
+        }
+
+        // Emit socket event
+        const io = req.app.get('io');
+        if (io) {
+            io.emit('tables-updated');
+        }
+
+        res.json({
+            success: true,
+            message: `Total tables set to ${totalTables}`,
+            totalTables
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Server error',
+            error: error.message
+        });
+    }
+};

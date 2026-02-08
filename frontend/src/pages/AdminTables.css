@@ -204,6 +204,181 @@
     color: #a0aec0;
 }
 
+/* Stat card total with edit */
+.stat-card.total {
+    cursor: pointer;
+    position: relative;
+    border: 2px solid rgba(108, 92, 231, 0.3);
+    transition: all 0.3s ease;
+}
+
+.stat-card.total:hover {
+    background: rgba(108, 92, 231, 0.1);
+    border-color: rgba(108, 92, 231, 0.5);
+}
+
+.stat-card.total .stat-value {
+    color: #a78bfa;
+}
+
+.edit-total-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    margin-top: 0.75rem;
+    padding: 0.4rem 0.75rem;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #6c5ce7, #5a52d5);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.edit-total-btn:hover {
+    transform: scale(1.05);
+}
+
+/* Modal */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 1rem;
+}
+
+.modal-content {
+    background: linear-gradient(145deg, #1e1e30, #252542);
+    border-radius: 20px;
+    width: 100%;
+    max-width: 400px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-header h2 {
+    color: #fff;
+    font-size: 1.25rem;
+    margin: 0;
+}
+
+.close-btn {
+    background: transparent;
+    border: none;
+    color: #a0aec0;
+    font-size: 1.25rem;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close-btn:hover {
+    color: #fff;
+}
+
+.modal-body {
+    padding: 1.25rem;
+}
+
+.modal-info {
+    color: #a0aec0;
+    margin-bottom: 1rem;
+}
+
+.modal-info strong {
+    color: #a78bfa;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    color: #a0aec0;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #6c5ce7;
+}
+
+.modal-warning {
+    font-size: 0.85rem;
+    color: #feca57;
+    background: rgba(254, 202, 87, 0.1);
+    padding: 0.75rem;
+    border-radius: 8px;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 1rem;
+    padding: 0 1.25rem 1.25rem;
+}
+
+.cancel-btn,
+.save-btn {
+    flex: 1;
+    padding: 0.875rem;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.cancel-btn {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.cancel-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.save-btn {
+    background: linear-gradient(135deg, #6c5ce7, #5a52d5);
+    color: white;
+}
+
+.save-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(108, 92, 231, 0.4);
+}
+
+.save-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .admin-tables-page {

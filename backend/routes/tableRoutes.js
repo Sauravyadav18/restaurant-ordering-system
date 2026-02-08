@@ -5,7 +5,8 @@ const {
     getAllTables,
     updateTableStatus,
     initializeTables,
-    freeTable
+    freeTable,
+    setTotalTables
 } = require('../controllers/tableController');
 const { protect, authorize } = require('../middleware/authMiddleware');
 
@@ -17,5 +18,6 @@ router.get('/', protect, authorize('owner'), getAllTables);
 router.patch('/:id', protect, authorize('owner'), updateTableStatus);
 router.patch('/:id/free', protect, authorize('owner'), freeTable);
 router.post('/initialize', protect, authorize('owner'), initializeTables);
+router.post('/set-total', protect, authorize('owner'), setTotalTables);
 
 module.exports = router;

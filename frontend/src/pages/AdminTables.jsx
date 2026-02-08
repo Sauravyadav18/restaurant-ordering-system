@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { tablesAPI } from '../services/api';
 import toast from 'react-hot-toast';
-import { FiArrowLeft, FiUsers, FiCheck, FiX, FiUnlock } from 'react-icons/fi';
+import { FiArrowLeft, FiUsers, FiCheck, FiX, FiUnlock, FiEdit2 } from 'react-icons/fi';
 import './AdminTables.css';
 
 const AdminTables = () => {
@@ -11,6 +11,9 @@ const AdminTables = () => {
     const { user, loading: authLoading } = useAuth();
     const [tables, setTables] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [newTotalTables, setNewTotalTables] = useState('');
+    const [saving, setSaving] = useState(false);
 
     useEffect(() => {
         if (!authLoading && !user) {
@@ -55,6 +58,33 @@ const AdminTables = () => {
         }
     };
 
+    const openEditModal = () => {
+        setNewTotalTables(tables.length.toString());
+        setShowEditModal(true);
+    };
+
+    const handleSaveTotalTables = async () => {
+        const total = parseInt(newTotalTables);
+        if (!total || total < 1 || total > 100) {
+            toast.error('Please enter a number between 1 and 100');
+            return;
+        }
+
+        setSaving(true);
+        try {
+            const response = await tablesAPI.setTotalTables(total);
+            if (response.data.success) {
+                toast.success(response.data.message);
+                setShowEditModal(false);
+                fetchTables();
+            }
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Failed to update total tables');
+        } finally {
+            setSaving(false);
+        }
+    };
+
     if (authLoading || loading) {
         return (
             <div className="admin-tables-page">
@@ -79,9 +109,12 @@ const AdminTables = () => {
                 </div>
 
                 <div className="tables-stats">
-                    <div className="stat-card">
+                    <div className="stat-card total" onClick={openEditModal}>
                         <span className="stat-value">{tables.length}</span>
                         <span className="stat-label">Total Tables</span>
+                        <button className="edit-total-btn">
+                            <FiEdit2 /> Edit
+                        </button>
                     </div>
                     <div className="stat-card available">
                         <span className="stat-value">{availableCount}</span>
@@ -155,6 +188,52 @@ const AdminTables = () => {
                     </div>
                 )}
             </div>
+
+            {/* Edit Total Tables Modal */}
+            {showEditModal && (
+                <div className="modal-overlay" onClick={() => setShowEditModal(false)}>
+                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                        <div className="modal-header">
+                            <h2>Edit Total Tables</h2>
+                            <button className="close-btn" onClick={() => setShowEditModal(false)}>
+                                <FiX />
+                            </button>
+                        </div>
+                        <div className="modal-body">
+                            <p className="modal-info">
+                                Current tables: <strong>{tables.length}</strong>
+                            </p>
+                            <div className="form-group">
+                                <label>New Total Tables (1-100)</label>
+                                <input
+                                    type="number"
+                                    min="1"
+                                    max="100"
+                                    value={newTotalTables}
+                                    onChange={(e) => setNewTotalTables(e.target.value)}
+                                    placeholder="Enter number of tables"
+                                />
+                            </div>
+                            <p className="modal-warning">
+                                ⚠️ Reducing tables will remove the highest numbered tables first.
+                                Occupied tables cannot be removed.
+                            </p>
+                        </div>
+                        <div className="modal-actions">
+                            <button className="cancel-btn" onClick={() => setShowEditModal(false)}>
+                                Cancel
+                            </button>
+                            <button
+                                className="save-btn"
+                                onClick={handleSaveTotalTables}
+                                disabled={saving}
+                            >
+                                {saving ? 'Saving...' : 'Save Changes'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
