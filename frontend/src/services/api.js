@@ -43,7 +43,8 @@ export const ordersAPI = {
     updateOrder: (id, data) => api.put(`/orders/${id}`, data),
     addItems: (id, items) => api.put(`/orders/${id}/add-items`, { items }),
     updateStatus: (id, status) => api.patch(`/orders/${id}`, { status }),
-    updatePayment: (id) => api.patch(`/orders/${id}/payment`)
+    updatePayment: (id) => api.patch(`/orders/${id}/payment`),
+    cancelOrder: (id) => api.put(`/orders/${id}/cancel`)
 };
 
 // Tables API

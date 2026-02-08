@@ -72,6 +72,10 @@ const orderSchema = new mongoose.Schema({
     isClosed: {
         type: Boolean,
         default: false
+    },
+    isCancelled: {
+        type: Boolean,
+        default: false
     }
 }, {
     timestamps: true

@@ -55,10 +55,21 @@ const AdminOrders = () => {
                 );
             });
 
+            // Listen for order cancelled
+            socket.on('order-cancelled', (cancelledOrder) => {
+                setOrders((prev) =>
+                    prev.filter((order) => order._id !== cancelledOrder._id)
+                );
+                toast.success(`Order #${cancelledOrder._id.slice(-6).toUpperCase()} cancelled`, {
+                    icon: '🚫'
+                });
+            });
+
             return () => {
                 socket.off('new-order');
                 socket.off('order-updated');
                 socket.off('order-closed');
+                socket.off('order-cancelled');
             };
         }
     }, [user]);
@@ -100,6 +111,15 @@ const AdminOrders = () => {
             toast.success('Payment received! Order closed.');
         } catch (error) {
             toast.error(error.response?.data?.message || 'Failed to update payment');
+        }
+    };
+
+    const handleCancelOrder = async (orderId) => {
+        try {
+            await ordersAPI.cancelOrder(orderId);
+            // Socket event will handle removing from list
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Failed to cancel order');
         }
     };
 
@@ -205,6 +225,7 @@ const AdminOrders = () => {
                                 order={order}
                                 onStatusChange={handleStatusChange}
                                 onPaymentReceived={handlePaymentReceived}
+                                onCancelOrder={handleCancelOrder}
                             />
                         ))}
 

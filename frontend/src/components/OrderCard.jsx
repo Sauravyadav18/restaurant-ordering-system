@@ -1,7 +1,10 @@
-import { FiClock, FiUser, FiDollarSign, FiCheck, FiHome, FiPackage, FiCalendar } from 'react-icons/fi';
+import { useState } from 'react';
+import { FiClock, FiUser, FiDollarSign, FiCheck, FiHome, FiPackage, FiCalendar, FiXCircle } from 'react-icons/fi';
 import './OrderCard.css';
 
-const OrderCard = ({ order, onStatusChange, onPaymentReceived, showActions = true, isClosed = false }) => {
+const OrderCard = ({ order, onStatusChange, onPaymentReceived, onCancelOrder, showActions = true, isClosed = false }) => {
+    const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+
     const statusColors = {
         Pending: '#feca57',
         Preparing: '#00d2d3',
@@ -21,8 +24,41 @@ const OrderCard = ({ order, onStatusChange, onPaymentReceived, showActions = tru
         return d.toLocaleString('en-IN', options).replace(',', ' –');
     };
 
+    const handleCancelClick = () => {
+        setShowCancelConfirm(true);
+    };
+
+    const handleConfirmCancel = () => {
+        if (onCancelOrder) {
+            onCancelOrder(order._id);
+        }
+        setShowCancelConfirm(false);
+    };
+
+    // Check if order is eligible for cancellation
+    const canCancel = !order.isClosed && !order.isCancelled && order.paymentStatus === 'Unpaid';
+
     return (
-        <div className={`order-card ${isClosed ? 'closed' : ''}`}>
+        <div className={`order-card ${isClosed ? 'closed' : ''} ${order.isCancelled ? 'cancelled' : ''}`}>
+            {/* Cancel Confirmation Modal */}
+            {showCancelConfirm && (
+                <div className="cancel-confirm-overlay">
+                    <div className="cancel-confirm-modal">
+                        <h4>Cancel Order?</h4>
+                        <p>Are you sure you want to cancel order #{order._id.slice(-6).toUpperCase()}?</p>
+                        <p className="cancel-warning">This action cannot be undone.</p>
+                        <div className="cancel-confirm-actions">
+                            <button className="confirm-yes" onClick={handleConfirmCancel}>
+                                Yes, Cancel Order
+                            </button>
+                            <button className="confirm-no" onClick={() => setShowCancelConfirm(false)}>
+                                No, Keep Order
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             <div className="order-card-header">
                 <div className="order-info">
                     <span className="order-id">#{order._id.slice(-6).toUpperCase()}</span>
@@ -37,9 +73,14 @@ const OrderCard = ({ order, onStatusChange, onPaymentReceived, showActions = tru
                             <FiDollarSign /> Paid
                         </span>
                     )}
-                    {order.isClosed && (
+                    {order.isClosed && !order.isCancelled && (
                         <span className="closed-badge">
                             <FiCheck /> Closed
+                        </span>
+                    )}
+                    {order.isCancelled && (
+                        <span className="cancelled-badge">
+                            <FiXCircle /> Cancelled
                         </span>
                     )}
                 </div>
@@ -80,39 +121,48 @@ const OrderCard = ({ order, onStatusChange, onPaymentReceived, showActions = tru
                 </div>
             </div>
 
-            {showActions && !isClosed && onStatusChange && (
+            {showActions && !isClosed && !order.isCancelled && onStatusChange && (
                 <div className="order-actions">
-                    {order.status === 'Pending' && (
-                        <button
-                            className="action-btn preparing"
-                            onClick={() => onStatusChange(order._id, 'Preparing')}
-                        >
-                            Start Preparing
+                    <div className="status-actions">
+                        {order.status === 'Pending' && (
+                            <button
+                                className="action-btn preparing"
+                                onClick={() => onStatusChange(order._id, 'Preparing')}
+                            >
+                                Start Preparing
+                            </button>
+                        )}
+                        {order.status === 'Preparing' && (
+                            <button
+                                className="action-btn served"
+                                onClick={() => onStatusChange(order._id, 'Served')}
+                            >
+                                Mark as Served
+                            </button>
+                        )}
+                        {order.status === 'Served' && order.paymentStatus === 'Unpaid' && onPaymentReceived && (
+                            <button
+                                className="action-btn payment"
+                                onClick={() => onPaymentReceived(order._id)}
+                            >
+                                <FiDollarSign /> Payment Received
+                            </button>
+                        )}
+                        {order.status === 'Served' && order.paymentStatus === 'Paid' && (
+                            <span className="completed-text">✓ Order Closed</span>
+                        )}
+                    </div>
+
+                    {/* Cancel Button - visible for active unpaid orders */}
+                    {canCancel && onCancelOrder && (
+                        <button className="action-btn cancel" onClick={handleCancelClick}>
+                            <FiXCircle /> Cancel Order
                         </button>
-                    )}
-                    {order.status === 'Preparing' && (
-                        <button
-                            className="action-btn served"
-                            onClick={() => onStatusChange(order._id, 'Served')}
-                        >
-                            Mark as Served
-                        </button>
-                    )}
-                    {order.status === 'Served' && order.paymentStatus === 'Unpaid' && onPaymentReceived && (
-                        <button
-                            className="action-btn payment"
-                            onClick={() => onPaymentReceived(order._id)}
-                        >
-                            <FiDollarSign /> Payment Received
-                        </button>
-                    )}
-                    {order.status === 'Served' && order.paymentStatus === 'Paid' && (
-                        <span className="completed-text">✓ Order Closed</span>
                     )}
                 </div>
             )}
 
-            {isClosed && (
+            {isClosed && !order.isCancelled && (
                 <div className="order-actions">
                     <span className="completed-text">✓ Order Completed</span>
                 </div>

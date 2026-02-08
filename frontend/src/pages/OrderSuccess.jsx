@@ -36,20 +36,49 @@ const OrderSuccess = () => {
             }
         });
 
+        // Listen for order cancellation
+        socket.on('order-cancelled', (cancelledOrder) => {
+            if (cancelledOrder._id === orderId) {
+                localStorage.removeItem('orderToken');
+                toast.error('Your order has been cancelled by the restaurant.', {
+                    duration: 5000,
+                    icon: '🚫'
+                });
+                // Redirect to home after a short delay
+                setTimeout(() => {
+                    navigate('/', { replace: true });
+                }, 2000);
+            }
+        });
+
         return () => {
             leaveOrderRoom(orderId);
             socket.off('order-updated');
             socket.off('order-closed');
+            socket.off('order-cancelled');
         };
     }, [orderId]);
 
     const fetchOrder = async () => {
         try {
             const response = await ordersAPI.getOne(orderId);
-            setOrder(response.data.data);
+            const orderData = response.data.data;
+
+            // If order is cancelled, redirect to home
+            if (orderData.isCancelled) {
+                localStorage.removeItem('orderToken');
+                toast.error('This order has been cancelled.', {
+                    duration: 4000,
+                    icon: '🚫'
+                });
+                navigate('/', { replace: true });
+                return;
+            }
+
+            setOrder(orderData);
 
             // If order is closed, clear the token
-            if (response.data.data.isClosed) {
+            if (orderData.isClosed) {
                 localStorage.removeItem('orderToken');
             }
         } catch (error) {

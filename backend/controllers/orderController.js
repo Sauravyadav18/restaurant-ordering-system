@@ -332,8 +332,8 @@ exports.getAllOrders = async (req, res) => {
     try {
         const { status, dateFilter, isClosed } = req.query;
 
-        // Build filter object
-        let filter = {};
+        // Build filter object - always exclude cancelled orders
+        let filter = { isCancelled: { $ne: true } };
 
         // Status filter
         if (status) {
@@ -485,6 +485,84 @@ exports.updatePaymentStatus = async (req, res) => {
         res.json({
             success: true,
             message: 'Payment received and order closed',
+            data: order
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Server error',
+            error: error.message
+        });
+    }
+};
+
+// Cancel order (Admin only)
+exports.cancelOrder = async (req, res) => {
+    try {
+        const order = await Order.findById(req.params.id);
+
+        if (!order) {
+            return res.status(404).json({
+                success: false,
+                message: 'Order not found'
+            });
+        }
+
+        // Check if order is already closed
+        if (order.isClosed) {
+            return res.status(400).json({
+                success: false,
+                message: 'Cannot cancel a closed order'
+            });
+        }
+
+        // Check if order is already cancelled
+        if (order.isCancelled) {
+            return res.status(400).json({
+                success: false,
+                message: 'Order is already cancelled'
+            });
+        }
+
+        // Check if order is already paid
+        if (order.paymentStatus === 'Paid') {
+            return res.status(400).json({
+                success: false,
+                message: 'Cannot cancel a paid order'
+            });
+        }
+
+        // Cancel the order
+        order.isCancelled = true;
+        order.isClosed = true;
+        await order.save();
+
+        // Unlock the table for Dine-In orders
+        if (order.orderType === 'Dine-In' && order.tableNumber) {
+            const table = await Table.findOne({ tableNumber: order.tableNumber });
+            if (table) {
+                table.isOccupied = false;
+                table.currentOrder = null;
+                await table.save();
+
+                // Emit socket event for table available
+                const io = req.app.get('io');
+                if (io) {
+                    io.emit('table-available', { tableNumber: order.tableNumber });
+                }
+            }
+        }
+
+        // Emit socket events for real-time update
+        const io = req.app.get('io');
+        if (io) {
+            io.emit('order-cancelled', order);
+            io.emit('order-updated', order);
+        }
+
+        res.json({
+            success: true,
+            message: 'Order cancelled successfully',
             data: order
         });
     } catch (error) {
