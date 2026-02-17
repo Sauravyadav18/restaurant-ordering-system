@@ -170,11 +170,17 @@ exports.sendResetOtp = async (req, res) => {
             });
         }
 
+        // Use email from user record, or fallback to EMAIL_USER env variable
         if (!user.email) {
-            return res.status(400).json({
-                success: false,
-                message: 'No email address configured for this account'
-            });
+            if (process.env.EMAIL_USER) {
+                user.email = process.env.EMAIL_USER;
+                await user.save({ validateBeforeSave: false });
+            } else {
+                return res.status(400).json({
+                    success: false,
+                    message: 'No email address configured for this account'
+                });
+            }
         }
 
         // Rate limit: don't allow new OTP if previous one was sent less than 60 seconds ago
