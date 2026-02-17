@@ -1,13 +1,23 @@
 const nodemailer = require('nodemailer');
 
 // Create reusable transporter using Gmail App Password
+// Uses port 587 with STARTTLS and forces IPv4 for Render compatibility
 const createTransporter = () => {
     return nodemailer.createTransport({
-        service: 'gmail',
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false, // use STARTTLS
         auth: {
             user: process.env.EMAIL_USER,
             pass: process.env.EMAIL_APP_PASSWORD
-        }
+        },
+        tls: {
+            rejectUnauthorized: false
+        },
+        connectionTimeout: 15000,
+        greetingTimeout: 10000,
+        socketTimeout: 15000,
+        family: 4 // Force IPv4 (fixes Render IPv6 issues)
     });
 };
 
