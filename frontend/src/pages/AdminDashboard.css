@@ -30,6 +30,7 @@
 
 .orders-btn,
 .tables-btn,
+.change-pwd-btn,
 .add-btn {
     display: flex;
     align-items: center;
@@ -60,6 +61,15 @@
 
 .tables-btn:hover {
     background: rgba(108, 92, 231, 0.3);
+}
+
+.change-pwd-btn {
+    background: rgba(254, 202, 87, 0.15);
+    color: #feca57;
+}
+
+.change-pwd-btn:hover {
+    background: rgba(254, 202, 87, 0.25);
 }
 
 .orders-btn {

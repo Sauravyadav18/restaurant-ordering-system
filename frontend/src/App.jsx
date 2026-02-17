@@ -13,6 +13,7 @@ import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminOrders from './pages/AdminOrders';
 import AdminTables from './pages/AdminTables';
+import ChangePassword from './pages/ChangePassword';
 import './App.css';
 
 // Wrapper to conditionally show FloatingCart
@@ -47,14 +48,7 @@ const OrderPersistenceChecker = () => {
         return;
       }
 
-      // Skip if in edit mode (editOrder or addItems query params)
-      const searchParams = new URLSearchParams(location.search);
-      if (searchParams.get('editOrder') || searchParams.get('addItems')) {
-        setChecked(true);
-        return;
-      }
-
-      // Skip on cart page (user might be in edit mode)
+      // Skip on cart page
       if (location.pathname === '/cart') {
         setChecked(true);
         return;
@@ -87,7 +81,7 @@ const OrderPersistenceChecker = () => {
     };
 
     checkActiveOrder();
-  }, [navigate, location.pathname, location.search]);
+  }, [navigate, location.pathname]);
 
   // Don't render anything until check is complete
   if (!checked && !location.pathname.startsWith('/admin') && !location.pathname.startsWith('/order/')) {
@@ -118,6 +112,7 @@ function App() {
                 <Route path="/admin" element={<AdminDashboard />} />
                 <Route path="/admin/orders" element={<AdminOrders />} />
                 <Route path="/admin/tables" element={<AdminTables />} />
+                <Route path="/admin/change-password" element={<ChangePassword />} />
               </Routes>
             </main>
             <FloatingCartWrapper />

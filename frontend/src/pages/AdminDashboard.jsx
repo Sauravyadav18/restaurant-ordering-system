@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { menuAPI } from '../services/api';
 import toast from 'react-hot-toast';
-import { FiPlus, FiEdit2, FiTrash2, FiPackage, FiX, FiUsers } from 'react-icons/fi';
+import { FiPlus, FiEdit2, FiTrash2, FiPackage, FiX, FiUsers, FiLock } from 'react-icons/fi';
 import './AdminDashboard.css';
 
 const categories = ['Starters', 'Main Course', 'Drinks', 'Desserts'];
@@ -139,6 +139,9 @@ const AdminDashboard = () => {
                     </button>
                     <button className="orders-btn" onClick={() => navigate('/admin/orders')}>
                         <FiPackage /> Orders
+                    </button>
+                    <button className="change-pwd-btn" onClick={() => navigate('/admin/change-password')}>
+                        <FiLock /> Change Password
                     </button>
                     <button className="add-btn" onClick={openAddModal}>
                         <FiPlus /> Add Item

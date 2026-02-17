@@ -8,6 +8,11 @@ const userSchema = new mongoose.Schema({
         unique: true,
         trim: true
     },
+    email: {
+        type: String,
+        trim: true,
+        lowercase: true
+    },
     password: {
         type: String,
         required: [true, 'Password is required']
@@ -16,6 +21,18 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ['owner'],
         default: 'owner'
+    },
+    resetOTP: {
+        type: String,
+        default: null
+    },
+    otpExpiry: {
+        type: Date,
+        default: null
+    },
+    otpAttempts: {
+        type: Number,
+        default: 0
     }
 }, {
     timestamps: true

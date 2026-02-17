@@ -22,7 +22,12 @@ api.interceptors.request.use((config) => {
 // Auth API
 export const authAPI = {
     login: (mobile, password) => api.post('/auth/login', { mobile, password }),
-    verify: () => api.get('/auth/verify')
+    verify: () => api.get('/auth/verify'),
+    changePassword: (oldPassword, newPassword, confirmPassword) =>
+        api.post('/auth/change-password', { oldPassword, newPassword, confirmPassword }),
+    sendResetOtp: (mobile) => api.post('/auth/send-reset-otp', { mobile }),
+    verifyResetOtp: (mobile, otp, newPassword, confirmPassword) =>
+        api.post('/auth/verify-reset-otp', { mobile, otp, newPassword, confirmPassword })
 };
 
 // Menu API
