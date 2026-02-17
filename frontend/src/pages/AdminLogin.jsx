@@ -115,11 +115,6 @@ const AdminLogin = () => {
                         )}
                     </button>
                 </form>
-
-                <div className="login-hint">
-                    <p>Demo credentials:</p>
-                    <code>Mobile: 7078490901 | Password: 490901</code>
-                </div>
             </div>
         </div>
     );
