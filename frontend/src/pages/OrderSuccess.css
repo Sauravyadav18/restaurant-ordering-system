@@ -116,50 +116,6 @@
     font-size: 0.9rem;
 }
 
-/* Order Actions */
-.order-actions {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-}
-
-.edit-order-btn,
-.add-items-btn {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 1rem;
-    border: none;
-    border-radius: 12px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.edit-order-btn {
-    background: rgba(254, 202, 87, 0.2);
-    color: #feca57;
-    border: 2px solid rgba(254, 202, 87, 0.3);
-}
-
-.edit-order-btn:hover {
-    background: rgba(254, 202, 87, 0.3);
-    transform: translateY(-2px);
-}
-
-.add-items-btn {
-    background: linear-gradient(135deg, #6c5ce7, #5a52d5);
-    color: white;
-}
-
-.add-items-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 20px rgba(108, 92, 231, 0.4);
-}
-
 /* Progress Steps */
 .order-progress {
     display: flex;

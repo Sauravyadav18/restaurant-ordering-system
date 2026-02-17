@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ordersAPI } from '../services/api';
 import { socket, connectSocket, joinOrderRoom, leaveOrderRoom } from '../services/socket';
-import { FiCheck, FiClock, FiHome, FiEdit2, FiPlus, FiPackage, FiCalendar } from 'react-icons/fi';
+import { FiCheck, FiClock, FiHome, FiPackage, FiCalendar } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 import './OrderSuccess.css';
 
@@ -110,16 +110,6 @@ const OrderSuccess = () => {
         }
     };
 
-    const handleEditOrder = () => {
-        // Navigate to menu with edit mode
-        navigate('/?editOrder=' + orderId);
-    };
-
-    const handleAddMoreItems = () => {
-        // Navigate to menu with add items mode
-        navigate('/?addItems=' + orderId);
-    };
-
     if (loading) {
         return (
             <div className="order-success-page">
@@ -143,8 +133,6 @@ const OrderSuccess = () => {
     }
 
     const currentStep = getStatusStep(order.status);
-    const canEdit = order.status === 'Pending' && order.paymentStatus !== 'Paid' && !order.isClosed;
-    const canAddItems = ['Preparing', 'Served'].includes(order.status) && order.paymentStatus !== 'Paid' && !order.isClosed;
 
     return (
         <div className="order-success-page">
@@ -221,22 +209,6 @@ const OrderSuccess = () => {
                         <span className="total-amount">₹{order.totalAmount}</span>
                     </div>
                 </div>
-
-                {/* Modification Buttons */}
-                {(canEdit || canAddItems) && !order.isClosed && (
-                    <div className="order-actions">
-                        {canEdit && (
-                            <button className="edit-order-btn" onClick={handleEditOrder}>
-                                <FiEdit2 /> Edit Order
-                            </button>
-                        )}
-                        {canAddItems && (
-                            <button className="add-items-btn" onClick={handleAddMoreItems}>
-                                <FiPlus /> Add More Items
-                            </button>
-                        )}
-                    </div>
-                )}
 
                 <div className="realtime-notice">
                     <FiClock />

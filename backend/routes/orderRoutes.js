@@ -5,8 +5,6 @@ const {
     getAllOrders,
     getOrder,
     getOrderByToken,
-    updateOrder,
-    addItemsToOrder,
     updateOrderStatus,
     updatePaymentStatus,
     cancelOrder
@@ -17,8 +15,6 @@ const { protect, authorize } = require('../middleware/authMiddleware');
 router.post('/', createOrder);
 router.get('/token/:token', getOrderByToken);
 router.get('/:id', getOrder);
-router.put('/:id', updateOrder);
-router.put('/:id/add-items', addItemsToOrder);
 
 // Protected routes (Admin only)
 router.get('/', protect, authorize('owner'), getAllOrders);

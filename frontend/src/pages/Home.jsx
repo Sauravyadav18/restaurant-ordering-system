@@ -1,77 +1,18 @@
-import { useState, useEffect, useRef } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
-import { menuAPI, ordersAPI } from '../services/api';
-import { useCart } from '../context/CartContext';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { menuAPI } from '../services/api';
 import MenuCard from '../components/MenuCard';
 import toast from 'react-hot-toast';
-import { FiX, FiEdit2, FiPlus, FiShoppingCart } from 'react-icons/fi';
 import './Home.css';
 
 const categories = ['All', 'Starters', 'Main Course', 'Drinks', 'Desserts'];
 
 const Home = () => {
-    const [searchParams, setSearchParams] = useSearchParams();
     const navigate = useNavigate();
-    const { editMode, startEditMode, cancelEditMode, getCartCount } = useCart();
 
     const [menuItems, setMenuItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [activeCategory, setActiveCategory] = useState('All');
-
-    // Track if we're already processing edit mode to prevent double processing
-    const processingRef = useRef(false);
-
-    // Check for edit/add mode from URL params
-    useEffect(() => {
-        const checkEditMode = async () => {
-            // Get params directly from URL as fallback
-            const urlParams = new URLSearchParams(window.location.search);
-            const editOrderId = searchParams.get('editOrder') || urlParams.get('editOrder');
-            const addItemsId = searchParams.get('addItems') || urlParams.get('addItems');
-
-            // Skip if already processing or already in edit mode for this order
-            if (processingRef.current) return;
-            if (editMode && (editMode.orderId === editOrderId || editMode.orderId === addItemsId)) return;
-
-            if (editOrderId) {
-                processingRef.current = true;
-                try {
-                    const response = await ordersAPI.getOne(editOrderId);
-                    if (response.data.success) {
-                        startEditMode(editOrderId, 'edit', response.data.data);
-                        toast.success('Edit mode: Modify your order and go to cart');
-                        // Clear the URL param
-                        setSearchParams({}, { replace: true });
-                        window.history.replaceState({}, '', window.location.pathname);
-                    }
-                } catch (error) {
-                    toast.error('Could not load order for editing');
-                    setSearchParams({}, { replace: true });
-                } finally {
-                    processingRef.current = false;
-                }
-            } else if (addItemsId) {
-                processingRef.current = true;
-                try {
-                    const response = await ordersAPI.getOne(addItemsId);
-                    if (response.data.success) {
-                        startEditMode(addItemsId, 'add', response.data.data);
-                        toast.success('Add items mode: Add new items and go to cart');
-                        // Clear the URL param
-                        setSearchParams({}, { replace: true });
-                        window.history.replaceState({}, '', window.location.pathname);
-                    }
-                } catch (error) {
-                    toast.error('Could not load order');
-                    setSearchParams({}, { replace: true });
-                } finally {
-                    processingRef.current = false;
-                }
-            }
-        };
-
-        checkEditMode();
-    }, [searchParams, startEditMode, setSearchParams, editMode]);
 
     useEffect(() => {
         fetchMenu();
@@ -90,11 +31,6 @@ const Home = () => {
         }
     };
 
-    const handleCancelEdit = () => {
-        cancelEditMode();
-        navigate('/order/' + editMode.orderId);
-    };
-
     const filteredItems = activeCategory === 'All'
         ? menuItems
         : menuItems.filter((item) => item.category === activeCategory);
@@ -106,32 +42,6 @@ const Home = () => {
 
     return (
         <div className="home-page">
-            {/* Edit Mode Banner */}
-            {editMode && (
-                <div className={`edit-mode-banner ${editMode.mode}`}>
-                    <div className="banner-content">
-                        <div className="banner-icon">
-                            {editMode.mode === 'edit' ? <FiEdit2 /> : <FiPlus />}
-                        </div>
-                        <div className="banner-text">
-                            <strong>
-                                {editMode.mode === 'edit' ? 'Editing Order' : 'Adding Items'}
-                            </strong>
-                            <span>#{editMode.orderId.slice(-6).toUpperCase()}</span>
-                        </div>
-                    </div>
-                    <div className="banner-actions">
-                        <button className="go-to-cart-btn" onClick={() => navigate('/cart')}>
-                            <FiShoppingCart />
-                            Go to Cart {getCartCount() > 0 && `(${getCartCount()})`}
-                        </button>
-                        <button className="cancel-edit-btn" onClick={handleCancelEdit}>
-                            <FiX /> Cancel
-                        </button>
-                    </div>
-                </div>
-            )}
-
             <section className="hero-section">
                 <div className="hero-content">
                     <h1 className="hero-title">
