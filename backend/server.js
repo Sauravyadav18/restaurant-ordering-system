@@ -12,6 +12,7 @@ const authRoutes = require('./routes/authRoutes');
 const menuRoutes = require('./routes/menuRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const tableRoutes = require('./routes/tableRoutes');
+const categoryRoutes = require('./routes/categoryRoutes');
 
 // Initialize express app
 const app = express();
@@ -53,6 +54,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/menu', menuRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/tables', tableRoutes);
+app.use('/api/categories', categoryRoutes);
 
 // 404 handler - catch all unmatched routes
 app.use((req, res) => {

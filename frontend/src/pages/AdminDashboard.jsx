@@ -1,12 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { menuAPI } from '../services/api';
+import { menuAPI, categoriesAPI } from '../services/api';
 import toast from 'react-hot-toast';
 import { FiPlus, FiEdit2, FiTrash2, FiPackage, FiX, FiUsers, FiLock } from 'react-icons/fi';
 import './AdminDashboard.css';
-
-const categories = ['Starters', 'Main Course', 'Drinks', 'Desserts'];
 
 const AdminDashboard = () => {
     const navigate = useNavigate();
@@ -15,10 +13,14 @@ const AdminDashboard = () => {
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [editingItem, setEditingItem] = useState(null);
+    const [categories, setCategories] = useState([]);
+    const [showAddCategory, setShowAddCategory] = useState(false);
+    const [newCategoryName, setNewCategoryName] = useState('');
+    const [addingCategory, setAddingCategory] = useState(false);
     const [formData, setFormData] = useState({
         name: '',
         description: '',
-        category: 'Starters',
+        category: '',
         price: '',
         image: '',
         available: true
@@ -33,6 +35,7 @@ const AdminDashboard = () => {
     useEffect(() => {
         if (user) {
             fetchMenu();
+            fetchCategories();
         }
     }, [user]);
 
@@ -44,6 +47,38 @@ const AdminDashboard = () => {
             toast.error('Failed to load menu');
         } finally {
             setLoading(false);
+        }
+    };
+
+    const fetchCategories = async () => {
+        try {
+            const response = await categoriesAPI.getAll();
+            setCategories(response.data.data.map(c => c.name));
+        } catch (error) {
+            console.error('Failed to load categories:', error);
+        }
+    };
+
+    const handleAddCategory = async () => {
+        const trimmed = newCategoryName.trim();
+        if (!trimmed) {
+            toast.error('Please enter a category name');
+            return;
+        }
+        setAddingCategory(true);
+        try {
+            await categoriesAPI.create(trimmed);
+            toast.success(`Category "${trimmed}" added!`);
+            setNewCategoryName('');
+            setShowAddCategory(false);
+            const response = await categoriesAPI.getAll();
+            const updatedCategories = response.data.data.map(c => c.name);
+            setCategories(updatedCategories);
+            setFormData(prev => ({ ...prev, category: trimmed }));
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Failed to add category');
+        } finally {
+            setAddingCategory(false);
         }
     };
 
@@ -96,11 +131,12 @@ const AdminDashboard = () => {
         setFormData({
             name: '',
             description: '',
-            category: 'Starters',
+            category: categories.length > 0 ? categories[0] : '',
             price: '',
             image: '',
             available: true
         });
+        setShowAddCategory(false);
         setShowModal(true);
     };
 
@@ -233,15 +269,48 @@ const AdminDashboard = () => {
                                 </div>
                                 <div className="form-group">
                                     <label>Category</label>
-                                    <select
-                                        name="category"
-                                        value={formData.category}
-                                        onChange={handleInputChange}
-                                    >
-                                        {categories.map((cat) => (
-                                            <option key={cat} value={cat}>{cat}</option>
-                                        ))}
-                                    </select>
+                                    <div className="category-select-row">
+                                        <select
+                                            name="category"
+                                            value={formData.category}
+                                            onChange={handleInputChange}
+                                        >
+                                            {categories.length === 0 && (
+                                                <option value="">No categories yet</option>
+                                            )}
+                                            {categories.map((cat) => (
+                                                <option key={cat} value={cat}>{cat}</option>
+                                            ))}
+                                        </select>
+                                        <button
+                                            type="button"
+                                            className="add-category-btn"
+                                            onClick={() => setShowAddCategory(!showAddCategory)}
+                                            title="Add new category"
+                                        >
+                                            <FiPlus />
+                                        </button>
+                                    </div>
+                                    {showAddCategory && (
+                                        <div className="add-category-inline">
+                                            <input
+                                                type="text"
+                                                placeholder="New category name"
+                                                value={newCategoryName}
+                                                onChange={(e) => setNewCategoryName(e.target.value)}
+                                                onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddCategory())}
+                                                autoFocus
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={handleAddCategory}
+                                                disabled={addingCategory}
+                                                className="save-category-btn"
+                                            >
+                                                {addingCategory ? '...' : 'Add'}
+                                            </button>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
 

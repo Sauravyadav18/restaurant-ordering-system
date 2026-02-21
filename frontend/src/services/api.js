@@ -58,5 +58,10 @@ export const tablesAPI = {
     freeTable: (id) => api.patch(`/tables/${id}/free`),
     setTotalTables: (totalTables) => api.post('/tables/set-total', { totalTables })
 };
+// Categories API
+export const categoriesAPI = {
+    getAll: () => api.get('/categories'),
+    create: (name) => api.post('/categories', { name })
+};
 
 export default api;

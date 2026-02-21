@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { menuAPI } from '../services/api';
+import { menuAPI, categoriesAPI } from '../services/api';
 import MenuCard from '../components/MenuCard';
 import toast from 'react-hot-toast';
 import './Home.css';
-
-const categories = ['All', 'Starters', 'Main Course', 'Drinks', 'Desserts'];
 
 const Home = () => {
     const navigate = useNavigate();
@@ -13,10 +11,22 @@ const Home = () => {
     const [menuItems, setMenuItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [activeCategory, setActiveCategory] = useState('All');
+    const [categories, setCategories] = useState(['All']);
 
     useEffect(() => {
         fetchMenu();
+        fetchCategories();
     }, []);
+
+    const fetchCategories = async () => {
+        try {
+            const response = await categoriesAPI.getAll();
+            const catNames = response.data.data.map(c => c.name);
+            setCategories(['All', ...catNames]);
+        } catch (error) {
+            console.error('Failed to load categories:', error);
+        }
+    };
 
     const fetchMenu = async () => {
         try {

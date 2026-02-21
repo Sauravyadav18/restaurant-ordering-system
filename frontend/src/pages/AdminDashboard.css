@@ -308,6 +308,110 @@
 
 .form-group select {
     cursor: pointer;
+    appearance: auto;
+    -webkit-appearance: auto;
+}
+
+/* Fix dropdown option visibility */
+.form-group select option {
+    background: #1e1e30;
+    color: #fff;
+    padding: 0.5rem;
+}
+
+.form-group select option:hover,
+.form-group select option:checked {
+    background: #ff6b6b;
+    color: #fff;
+}
+
+/* Category select row with + button */
+.category-select-row {
+    display: flex;
+    gap: 0.5rem;
+    align-items: stretch;
+}
+
+.category-select-row select {
+    flex: 1;
+}
+
+.add-category-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    min-width: 42px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    background: rgba(108, 92, 231, 0.2);
+    color: #a78bfa;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1.1rem;
+}
+
+.add-category-btn:hover {
+    background: rgba(108, 92, 231, 0.4);
+    border-color: #a78bfa;
+    color: #fff;
+}
+
+/* Inline add category input */
+.add-category-inline {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.add-category-inline input {
+    flex: 1;
+    padding: 0.6rem 0.75rem;
+    border: 2px solid rgba(108, 92, 231, 0.3);
+    border-radius: 8px;
+    background: rgba(108, 92, 231, 0.1);
+    color: #fff;
+    font-size: 0.9rem;
+}
+
+.add-category-inline input:focus {
+    outline: none;
+    border-color: #a78bfa;
+}
+
+.save-category-btn {
+    padding: 0.6rem 1rem;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #6c5ce7, #5a52d5);
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.85rem;
+}
+
+.save-category-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(108, 92, 231, 0.4);
+}
+
+.save-category-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 
 .form-group textarea {
