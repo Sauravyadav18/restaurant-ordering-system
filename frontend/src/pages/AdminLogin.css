@@ -105,6 +105,35 @@
     cursor: not-allowed;
 }
 
+/* Forgot Password Link */
+.login-forgot {
+    text-align: center;
+    margin-top: 1.25rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.forgot-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: #a0aec0;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+}
+
+.forgot-link:hover {
+    color: #feca57;
+    background: rgba(254, 202, 87, 0.08);
+}
+
+.forgot-link svg {
+    font-size: 0.85rem;
+}
+
 .login-hint {
     margin-top: 2rem;
     padding-top: 1.5rem;

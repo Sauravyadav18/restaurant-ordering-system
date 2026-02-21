@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 import { FiPhone, FiLock, FiLogIn } from 'react-icons/fi';
@@ -115,6 +115,12 @@ const AdminLogin = () => {
                         )}
                     </button>
                 </form>
+
+                <div className="login-forgot">
+                    <Link to="/admin/change-password?tab=forgot" className="forgot-link">
+                        <FiLock /> Forgot Password?
+                    </Link>
+                </div>
             </div>
         </div>
     );

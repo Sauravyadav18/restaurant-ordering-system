@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { authAPI } from '../services/api';
 import toast from 'react-hot-toast';
@@ -8,8 +8,12 @@ import './ChangePassword.css';
 
 const ChangePassword = () => {
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
     const { user, loading: authLoading, logout } = useAuth();
-    const [activeTab, setActiveTab] = useState('change'); // 'change' or 'forgot'
+
+    // Read ?tab=forgot from URL to auto-select forgot tab (e.g. from login page)
+    const initialTab = searchParams.get('tab') === 'forgot' ? 'forgot' : 'change';
+    const [activeTab, setActiveTab] = useState(initialTab);
 
     // Change Password state
     const [oldPassword, setOldPassword] = useState('');
@@ -32,6 +36,8 @@ const ChangePassword = () => {
     const [showForgotConfirmPwd, setShowForgotConfirmPwd] = useState(false);
     const [otpTimer, setOtpTimer] = useState(0);
 
+    // Only redirect to login if user is not logged in AND on the 'change' tab
+    // The 'forgot' tab should be accessible without login
     useEffect(() => {
         if (!authLoading && !user && activeTab === 'change') {
             navigate('/admin/login');
@@ -140,8 +146,8 @@ const ChangePassword = () => {
     return (
         <div className="change-password-page">
             <div className="cp-container">
-                <button className="cp-back-btn" onClick={() => navigate('/admin')}>
-                    <FiArrowLeft /> Back to Dashboard
+                <button className="cp-back-btn" onClick={() => navigate(user ? '/admin' : '/admin/login')}>
+                    <FiArrowLeft /> {user ? 'Back to Dashboard' : 'Back to Login'}
                 </button>
 
                 <div className="cp-header">
