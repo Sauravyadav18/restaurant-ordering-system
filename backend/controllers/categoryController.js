@@ -1,4 +1,5 @@
 const Category = require('../models/Category');
+const Menu = require('../models/Menu');
 
 // @desc    Get all categories
 // @route   GET /api/categories
@@ -60,6 +61,44 @@ exports.createCategory = async (req, res) => {
                 message: 'Category already exists'
             });
         }
+        res.status(500).json({
+            success: false,
+            message: 'Server error',
+            error: error.message
+        });
+    }
+};
+
+// @desc    Delete a category
+// @route   DELETE /api/categories/:id
+// @access  Private (Admin)
+exports.deleteCategory = async (req, res) => {
+    try {
+        const category = await Category.findById(req.params.id);
+
+        if (!category) {
+            return res.status(404).json({
+                success: false,
+                message: 'Category not found'
+            });
+        }
+
+        // Check if any menu items use this category
+        const menuCount = await Menu.countDocuments({ category: category.name });
+        if (menuCount > 0) {
+            return res.status(400).json({
+                success: false,
+                message: `Cannot delete: ${menuCount} menu item(s) use this category. Reassign them first.`
+            });
+        }
+
+        await Category.findByIdAndDelete(req.params.id);
+
+        res.json({
+            success: true,
+            message: 'Category deleted'
+        });
+    } catch (error) {
         res.status(500).json({
             success: false,
             message: 'Server error',

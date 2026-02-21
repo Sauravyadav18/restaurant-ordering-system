@@ -53,7 +53,7 @@ const AdminDashboard = () => {
     const fetchCategories = async () => {
         try {
             const response = await categoriesAPI.getAll();
-            setCategories(response.data.data.map(c => c.name));
+            setCategories(response.data.data);
         } catch (error) {
             console.error('Failed to load categories:', error);
         }
@@ -70,15 +70,27 @@ const AdminDashboard = () => {
             await categoriesAPI.create(trimmed);
             toast.success(`Category "${trimmed}" added!`);
             setNewCategoryName('');
-            setShowAddCategory(false);
-            const response = await categoriesAPI.getAll();
-            const updatedCategories = response.data.data.map(c => c.name);
-            setCategories(updatedCategories);
+            await fetchCategories();
             setFormData(prev => ({ ...prev, category: trimmed }));
         } catch (error) {
             toast.error(error.response?.data?.message || 'Failed to add category');
         } finally {
             setAddingCategory(false);
+        }
+    };
+
+    const handleDeleteCategory = async (cat) => {
+        if (!window.confirm(`Delete category "${cat.name}"?`)) return;
+        try {
+            await categoriesAPI.delete(cat._id);
+            toast.success(`Category "${cat.name}" deleted`);
+            await fetchCategories();
+            // Reset dropdown if deleted category was selected
+            if (formData.category === cat.name) {
+                setFormData(prev => ({ ...prev, category: '' }));
+            }
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Failed to delete category');
         }
     };
 
@@ -131,7 +143,7 @@ const AdminDashboard = () => {
         setFormData({
             name: '',
             description: '',
-            category: categories.length > 0 ? categories[0] : '',
+            category: categories.length > 0 ? categories[0].name : '',
             price: '',
             image: '',
             available: true
@@ -279,7 +291,7 @@ const AdminDashboard = () => {
                                                 <option value="">No categories yet</option>
                                             )}
                                             {categories.map((cat) => (
-                                                <option key={cat} value={cat}>{cat}</option>
+                                                <option key={cat._id} value={cat.name}>{cat.name}</option>
                                             ))}
                                         </select>
                                         <button
@@ -309,6 +321,23 @@ const AdminDashboard = () => {
                                             >
                                                 {addingCategory ? '...' : 'Add'}
                                             </button>
+                                        </div>
+                                    )}
+                                    {showAddCategory && categories.length > 0 && (
+                                        <div className="category-list">
+                                            {categories.map((cat) => (
+                                                <div key={cat._id} className="category-list-item">
+                                                    <span>{cat.name}</span>
+                                                    <button
+                                                        type="button"
+                                                        className="delete-category-btn"
+                                                        onClick={() => handleDeleteCategory(cat)}
+                                                        title={`Delete ${cat.name}`}
+                                                    >
+                                                        <FiTrash2 />
+                                                    </button>
+                                                </div>
+                                            ))}
                                         </div>
                                     )}
                                 </div>

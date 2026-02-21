@@ -61,7 +61,8 @@ export const tablesAPI = {
 // Categories API
 export const categoriesAPI = {
     getAll: () => api.get('/categories'),
-    create: (name) => api.post('/categories', { name })
+    create: (name) => api.post('/categories', { name }),
+    delete: (id) => api.delete(`/categories/${id}`)
 };
 
 export default api;
