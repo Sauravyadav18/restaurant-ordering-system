@@ -4,7 +4,7 @@ import { useCart } from '../context/CartContext';
 import { ordersAPI, tablesAPI } from '../services/api';
 import CartItem from '../components/CartItem';
 import toast from 'react-hot-toast';
-import { FiShoppingBag, FiArrowLeft, FiUser, FiHome, FiPackage } from 'react-icons/fi';
+import { FiShoppingBag, FiArrowLeft, FiUser, FiPhone, FiHome, FiPackage } from 'react-icons/fi';
 import './Cart.css';
 
 const Cart = () => {
@@ -13,6 +13,7 @@ const Cart = () => {
     const [loading, setLoading] = useState(false);
     const [selectedTable, setSelectedTable] = useState('');
     const [customerName, setCustomerName] = useState('');
+    const [customerPhone, setCustomerPhone] = useState('');
     const [orderType, setOrderType] = useState('Dine-In');
     const [availableTables, setAvailableTables] = useState([]);
     const [tablesLoading, setTablesLoading] = useState(true);
@@ -42,6 +43,12 @@ const Cart = () => {
             return;
         }
 
+        const trimmedPhone = customerPhone.trim();
+        if (!trimmedPhone || !/^\d{10}$/.test(trimmedPhone)) {
+            toast.error('Please enter a valid 10-digit phone number');
+            return;
+        }
+
         // Validate table selection for Dine-In orders
         if (orderType === 'Dine-In' && !selectedTable) {
             toast.error('Please select a table for Dine-In orders');
@@ -59,6 +66,7 @@ const Cart = () => {
             const orderData = {
                 orderType,
                 customerName: trimmedName,
+                customerPhone: trimmedPhone,
                 items: cartItems.map((item) => ({
                     menuItem: item._id,
                     name: item.name,
@@ -142,6 +150,20 @@ const Cart = () => {
                                 value={customerName}
                                 onChange={(e) => setCustomerName(e.target.value)}
                                 maxLength={50}
+                            />
+                        </div>
+
+                        <div className="customer-input-section">
+                            <label htmlFor="customerPhone">
+                                <FiPhone /> Phone Number
+                            </label>
+                            <input
+                                type="tel"
+                                id="customerPhone"
+                                placeholder="Enter 10-digit phone number"
+                                value={customerPhone}
+                                onChange={(e) => setCustomerPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
+                                maxLength={10}
                             />
                         </div>
 

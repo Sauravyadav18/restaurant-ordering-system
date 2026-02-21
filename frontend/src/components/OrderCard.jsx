@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FiClock, FiUser, FiDollarSign, FiCheck, FiHome, FiPackage, FiCalendar, FiXCircle } from 'react-icons/fi';
+import { FiClock, FiUser, FiPhone, FiDollarSign, FiCheck, FiHome, FiPackage, FiCalendar, FiXCircle } from 'react-icons/fi';
 import './OrderCard.css';
 
 const OrderCard = ({ order, onStatusChange, onPaymentReceived, onCancelOrder, showActions = true, isClosed = false }) => {
@@ -98,6 +98,13 @@ const OrderCard = ({ order, onStatusChange, onPaymentReceived, onCancelOrder, sh
             <div className="customer-info">
                 <FiUser />
                 <span className="customer-name">{order.customerName || 'Customer'}</span>
+                {order.customerPhone && (
+                    <>
+                        <span className="customer-separator">•</span>
+                        <FiPhone />
+                        <a href={`tel:${order.customerPhone}`} className="customer-phone">{order.customerPhone}</a>
+                    </>
+                )}
             </div>
 
             <div className="order-date-info">

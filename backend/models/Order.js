@@ -44,6 +44,12 @@ const orderSchema = new mongoose.Schema({
         trim: true,
         minlength: [2, 'Customer name must be at least 2 characters']
     },
+    customerPhone: {
+        type: String,
+        required: [true, 'Customer phone number is required'],
+        trim: true,
+        match: [/^\d{10}$/, 'Please enter a valid 10-digit phone number']
+    },
     items: {
         type: [orderItemSchema],
         required: true,
