@@ -30,7 +30,7 @@ const getDateFilter = (filter) => {
 // Create new order (Customer)
 exports.createOrder = async (req, res) => {
     try {
-        const { tableNumber, customerName, items, orderType } = req.body;
+        const { tableNumber, customerName, customerPhone, items, orderType } = req.body;
 
         // Validate orderType
         if (!orderType || !['Dine-In', 'Parcel'].includes(orderType)) {
@@ -53,6 +53,22 @@ exports.createOrder = async (req, res) => {
             return res.status(400).json({
                 success: false,
                 message: 'Customer name must be at least 2 characters'
+            });
+        }
+
+        // Validate customerPhone
+        if (!customerPhone) {
+            return res.status(400).json({
+                success: false,
+                message: 'Customer phone number is required'
+            });
+        }
+
+        const trimmedPhone = customerPhone.trim();
+        if (!/^\d{10}$/.test(trimmedPhone)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Please enter a valid 10-digit phone number'
             });
         }
 
@@ -112,6 +128,7 @@ exports.createOrder = async (req, res) => {
             orderToken,
             orderType,
             customerName: trimmedName,
+            customerPhone: trimmedPhone,
             items,
             totalAmount,
             status: 'Pending',

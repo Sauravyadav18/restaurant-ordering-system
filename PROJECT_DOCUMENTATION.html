@@ -1,0 +1,1569 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>&#x1f37d;&#xfe0f; Restaurant Menu &amp; Ordering System &mdash; Complete Project Documentation</title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+</style>
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css">
+<link href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        
+        </head>
+        <body class="vscode-body vscode-light">
+            <h1 id="️-restaurant-menu--ordering-system--complete-project-documentation">🍽️ Restaurant Menu &amp; Ordering System — Complete Project Documentation</h1>
+<blockquote>
+<p><strong>Tech Stack:</strong> React · Node.js · Express · MongoDB · <a href="http://Socket.io">Socket.io</a> · JWT<br>
+<strong>Author:</strong> Saurav Yadav<br>
+<strong>Purpose:</strong> A beginner-friendly, professional knowledge transfer guide</p>
+</blockquote>
+<hr>
+<h1 id="table-of-contents">Table of Contents</h1>
+<ol>
+<li><a href="#1-project-overview">Project Overview</a></li>
+<li><a href="#2-project-architecture">Project Architecture</a></li>
+<li><a href="#3-backend-deep-explanation">Backend Deep Explanation</a></li>
+<li><a href="#4-database-explanation-mongodb">Database Explanation (MongoDB)</a></li>
+<li><a href="#5-frontend-deep-explanation">Frontend Deep Explanation</a></li>
+<li><a href="#6-real-time-communication-socketio">Real-Time Communication (Socket.io)</a></li>
+<li><a href="#7-authentication--security">Authentication &amp; Security</a></li>
+<li><a href="#8-deployment-explanation">Deployment Explanation</a></li>
+<li><a href="#9-step-by-step-execution-flow">Step-by-Step Execution Flow</a></li>
+<li><a href="#10-common-bugs--debugging-guide">Common Bugs &amp; Debugging Guide</a></li>
+<li><a href="#11-learning-section">Learning Section</a></li>
+</ol>
+<hr>
+<h1 id="1-project-overview">1. Project Overview</h1>
+<h2 id="what-this-project-does">What This Project Does</h2>
+<p>This is a <strong>full-stack restaurant ordering system</strong> where:</p>
+<ul>
+<li><strong>Customers</strong> browse a menu, add items to cart, select a table (or parcel), and place orders</li>
+<li><strong>Admin (Restaurant Owner)</strong> manages the menu, views orders in real-time, updates order status, manages tables, and handles payments</li>
+<li>Everything happens in <strong>real-time</strong> — when a customer places an order, the admin sees it instantly (no page refresh needed)</li>
+</ul>
+<h2 id="features-implemented">Features Implemented</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Dynamic Menu</strong></td>
+<td>Menu items with categories, prices, images, availability toggle</td>
+</tr>
+<tr>
+<td><strong>Shopping Cart</strong></td>
+<td>Add/remove items, persistent across page refreshes</td>
+</tr>
+<tr>
+<td><strong>Order Types</strong></td>
+<td>Dine-In (with table selection) or Parcel</td>
+</tr>
+<tr>
+<td><strong>Table Management</strong></td>
+<td>Lock tables on order, unlock on payment/cancellation</td>
+</tr>
+<tr>
+<td><strong>Real-Time Updates</strong></td>
+<td><a href="http://Socket.io">Socket.io</a> for instant order notifications</td>
+</tr>
+<tr>
+<td><strong>Admin Dashboard</strong></td>
+<td>CRUD menu items, manage categories</td>
+</tr>
+<tr>
+<td><strong>Order Management</strong></td>
+<td>Status flow: Pending → Preparing → Served → Paid</td>
+</tr>
+<tr>
+<td><strong>Order Cancellation</strong></td>
+<td>Admin can cancel unpaid orders</td>
+</tr>
+<tr>
+<td><strong>Payment Tracking</strong></td>
+<td>Mark orders as paid, auto-close and free table</td>
+</tr>
+<tr>
+<td><strong>Dynamic Categories</strong></td>
+<td>Admin can add/delete categories dynamically</td>
+</tr>
+<tr>
+<td><strong>Password Management</strong></td>
+<td>Change password + Forgot password via email OTP</td>
+</tr>
+<tr>
+<td><strong>JWT Authentication</strong></td>
+<td>Secure admin routes with token-based auth</td>
+</tr>
+<tr>
+<td><strong>Order Persistence</strong></td>
+<td>Customer can close browser and return to see their order</td>
+</tr>
+</tbody>
+</table>
+<h2 id="order-lifecycle">Order Lifecycle</h2>
+<pre><code>┌──────────┐    ┌───────────┐    ┌────────┐    ┌──────┐    ┌────────┐
+│ Customer │───▶│  Pending  │───▶│Preparing│───▶│Served│───▶│  Paid  │
+│  Places  │    │  (New)    │    │ (Admin) │    │(Admin)│   │(Closed)│
+│  Order   │    └───────────┘    └────────┘    └──────┘    └────────┘
+└──────────┘          │                                         │
+                      │         ┌───────────┐                   │
+                      └────────▶│ Cancelled │                   │
+                                │  (Admin)  │                   │
+                                └───────────┘                   │
+                                                                ▼
+                                                          Table Freed
+</code></pre>
+<h2 id="admin-vs-customer-flow">Admin vs Customer Flow</h2>
+<pre><code>┌─────────────────────────────────────────────────────────┐
+│                     CUSTOMER FLOW                       │
+│                                                         │
+│  Browse Menu ──▶ Add to Cart ──▶ Enter Details ──▶     │
+│  Select Table ──▶ Place Order ──▶ Track Status          │
+└─────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────┐
+│                      ADMIN FLOW                         │
+│                                                         │
+│  Login ──▶ Manage Menu ──▶ View Orders ──▶             │
+│  Update Status ──▶ Receive Payment ──▶ Manage Tables   │
+└─────────────────────────────────────────────────────────┘
+</code></pre>
+<hr>
+<h1 id="2-project-architecture">2. Project Architecture</h1>
+<h2 id="folder-structure">Folder Structure</h2>
+<pre><code>restaurant-ordering-system/
+├── backend/                        ← Node.js API Server
+│   ├── config/
+│   │   └── db.js                   ← MongoDB connection
+│   ├── controllers/
+│   │   ├── authController.js       ← Login, password reset, OTP
+│   │   ├── categoryController.js   ← CRUD categories
+│   │   ├── menuController.js       ← CRUD menu items
+│   │   ├── orderController.js      ← Create, update, cancel orders
+│   │   └── tableController.js      ← Table management
+│   ├── middleware/
+│   │   ├── authMiddleware.js       ← JWT verification + role check
+│   │   └── errorHandler.js         ← Global error handling
+│   ├── models/
+│   │   ├── Category.js             ← Category schema
+│   │   ├── Menu.js                 ← Menu item schema
+│   │   ├── Order.js                ← Order schema (with items)
+│   │   ├── Table.js                ← Table schema
+│   │   └── User.js                 ← Admin user schema
+│   ├── routes/
+│   │   ├── authRoutes.js           ← /api/auth/*
+│   │   ├── categoryRoutes.js       ← /api/categories/*
+│   │   ├── menuRoutes.js           ← /api/menu/*
+│   │   ├── orderRoutes.js          ← /api/orders/*
+│   │   └── tableRoutes.js          ← /api/tables/*
+│   ├── socket/
+│   │   └── socketHandler.js        ← WebSocket event handling
+│   ├── utils/
+│   │   └── emailService.js         ← OTP email (Brevo + Gmail)
+│   ├── server.js                   ← App entry point
+│   ├── seed.js                     ← Seed menu items
+│   └── seedCategories.js           ← Seed default categories
+│
+├── frontend/                       ← React (Vite) App
+│   └── src/
+│       ├── components/
+│       │   ├── CartItem.jsx        ← Single cart item row
+│       │   ├── FloatingCart.jsx    ← Bottom-right cart bubble
+│       │   ├── MenuCard.jsx        ← Menu item card
+│       │   ├── Navbar.jsx          ← Top navigation bar
+│       │   └── OrderCard.jsx       ← Order display card (admin)
+│       ├── context/
+│       │   ├── AuthContext.jsx     ← Auth state (login/logout)
+│       │   └── CartContext.jsx     ← Cart state (items/total)
+│       ├── pages/
+│       │   ├── Home.jsx            ← Menu browsing page
+│       │   ├── Cart.jsx            ← Cart + place order
+│       │   ├── OrderSuccess.jsx    ← Order tracking page
+│       │   ├── AdminLogin.jsx      ← Admin login form
+│       │   ├── AdminDashboard.jsx  ← Menu CRUD + categories
+│       │   ├── AdminOrders.jsx     ← Order management
+│       │   ├── AdminTables.jsx     ← Table management
+│       │   └── ChangePassword.jsx  ← Password change/reset
+│       ├── services/
+│       │   ├── api.js              ← Axios API client
+│       │   └── socket.js           ← Socket.io client
+│       ├── App.jsx                 ← Root component + routing
+│       └── main.jsx                ← React entry point
+</code></pre>
+<h2 id="how-frontend-and-backend-connect">How Frontend and Backend Connect</h2>
+<pre><code>┌───────────────────┐         HTTP (REST API)          ┌──────────────────┐
+│                   │  ─────────────────────────────▶   │                  │
+│   React Frontend  │         /api/menu                │  Node.js Backend │
+│   (Port 5173)     │         /api/orders              │  (Port 5000)     │
+│                   │         /api/auth                 │                  │
+│                   │  ◀─────────────────────────────   │                  │
+│                   │                                   │                  │
+│                   │      WebSocket (Socket.io)        │                  │
+│                   │  ◀════════════════════════════▶   │                  │
+│                   │    Real-time: order updates       │                  │
+└───────────────────┘                                   └──────┬───────────┘
+                                                               │
+                                                               │
+                                                        ┌──────▼───────┐
+                                                        │   MongoDB    │
+                                                        │  (Database)  │
+                                                        └──────────────┘
+</code></pre>
+<p><strong>WHY separate?</strong></p>
+<ul>
+<li>Frontend and backend run independently — you can deploy them on different servers</li>
+<li>This is how <strong>real-world apps</strong> work (Netflix frontend ≠ Netflix backend)</li>
+<li>You can build a mobile app later that talks to the same backend</li>
+</ul>
+<hr>
+<h1 id="3-backend-deep-explanation">3. Backend Deep Explanation</h1>
+<h2 id="31-serverjs--the-entry-point">3.1 server.js — The Entry Point</h2>
+<p><code>server.js</code> is the first file that runs. It sets up everything:</p>
+<pre><code class="language-javascript"><span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;dotenv&#x27;</span>).<span class="hljs-title function_">config</span>();           <span class="hljs-comment">// Load .env variables</span>
+<span class="hljs-keyword">const</span> express = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;express&#x27;</span>);    <span class="hljs-comment">// Web framework</span>
+<span class="hljs-keyword">const</span> cors = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;cors&#x27;</span>);          <span class="hljs-comment">// Allow cross-origin requests</span>
+<span class="hljs-keyword">const</span> http = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;http&#x27;</span>);          <span class="hljs-comment">// Built-in HTTP module</span>
+<span class="hljs-keyword">const</span> { <span class="hljs-title class_">Server</span> } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;socket.io&#x27;</span>);  <span class="hljs-comment">// Real-time engine</span>
+
+<span class="hljs-keyword">const</span> app = <span class="hljs-title function_">express</span>();                 <span class="hljs-comment">// Create Express app</span>
+
+<span class="hljs-comment">// CORS — allow frontend to talk to backend</span>
+app.<span class="hljs-title function_">use</span>(<span class="hljs-title function_">cors</span>());
+
+<span class="hljs-comment">// Parse JSON request bodies</span>
+app.<span class="hljs-title function_">use</span>(express.<span class="hljs-title function_">json</span>());
+
+<span class="hljs-comment">// Connect to MongoDB</span>
+<span class="hljs-title function_">connectDB</span>();
+
+<span class="hljs-comment">// Register API routes</span>
+app.<span class="hljs-title function_">use</span>(<span class="hljs-string">&#x27;/api/auth&#x27;</span>, authRoutes);       <span class="hljs-comment">// Authentication</span>
+app.<span class="hljs-title function_">use</span>(<span class="hljs-string">&#x27;/api/menu&#x27;</span>, menuRoutes);       <span class="hljs-comment">// Menu CRUD</span>
+app.<span class="hljs-title function_">use</span>(<span class="hljs-string">&#x27;/api/orders&#x27;</span>, orderRoutes);    <span class="hljs-comment">// Order management</span>
+app.<span class="hljs-title function_">use</span>(<span class="hljs-string">&#x27;/api/tables&#x27;</span>, tableRoutes);    <span class="hljs-comment">// Table management</span>
+app.<span class="hljs-title function_">use</span>(<span class="hljs-string">&#x27;/api/categories&#x27;</span>, categoryRoutes); <span class="hljs-comment">// Category management</span>
+
+<span class="hljs-comment">// Create HTTP server and attach Socket.io</span>
+<span class="hljs-keyword">const</span> server = http.<span class="hljs-title function_">createServer</span>(app);
+<span class="hljs-keyword">const</span> io = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Server</span>(server, { <span class="hljs-attr">cors</span>: { <span class="hljs-attr">origin</span>: <span class="hljs-string">&#x27;*&#x27;</span> } });
+
+<span class="hljs-comment">// Make io accessible inside controllers</span>
+app.<span class="hljs-title function_">set</span>(<span class="hljs-string">&#x27;io&#x27;</span>, io);
+
+<span class="hljs-comment">// Start listening</span>
+server.<span class="hljs-title function_">listen</span>(<span class="hljs-variable constant_">PORT</span>, <span class="hljs-string">&#x27;0.0.0.0&#x27;</span>, <span class="hljs-function">() =&gt;</span> {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`Server running on port <span class="hljs-subst">${PORT}</span>`</span>);
+});
+</code></pre>
+<p><strong>WHY <code>app.set('io', io)</code>?</strong><br>
+Controllers don't import <a href="http://Socket.io">Socket.io</a> directly. Instead, we store <code>io</code> on the Express app, and access it via <code>req.app.get('io')</code> inside any controller. This is a clean pattern used in production.</p>
+<h2 id="32-how-express-works">3.2 How Express Works</h2>
+<p>Express is a minimal <strong>web framework</strong> for Node.js. It handles:</p>
+<pre><code>Client Request ──▶ Middleware ──▶ Route ──▶ Controller ──▶ Response
+</code></pre>
+<ol>
+<li><strong>Middleware</strong> processes the request first (parse JSON, check auth)</li>
+<li><strong>Route</strong> matches the URL to the right handler</li>
+<li><strong>Controller</strong> contains the actual business logic</li>
+<li><strong>Response</strong> is sent back to the client</li>
+</ol>
+<h2 id="33-how-routes-are-structured">3.3 How Routes Are Structured</h2>
+<p>Each resource (<code>menu</code>, <code>orders</code>, <code>tables</code>, etc.) has its own route file:</p>
+<pre><code class="language-javascript"><span class="hljs-comment">// routes/menuRoutes.js</span>
+<span class="hljs-keyword">const</span> router = express.<span class="hljs-title class_">Router</span>();
+
+<span class="hljs-comment">// Public routes — anyone can access</span>
+router.<span class="hljs-title function_">get</span>(<span class="hljs-string">&#x27;/&#x27;</span>, getAllMenuItems);       <span class="hljs-comment">// GET /api/menu</span>
+router.<span class="hljs-title function_">get</span>(<span class="hljs-string">&#x27;/:id&#x27;</span>, getMenuItem);       <span class="hljs-comment">// GET /api/menu/123</span>
+
+<span class="hljs-comment">// Protected routes — admin only</span>
+router.<span class="hljs-title function_">post</span>(<span class="hljs-string">&#x27;/&#x27;</span>, protect, <span class="hljs-title function_">authorize</span>(<span class="hljs-string">&#x27;owner&#x27;</span>), createMenuItem);
+router.<span class="hljs-title function_">put</span>(<span class="hljs-string">&#x27;/:id&#x27;</span>, protect, <span class="hljs-title function_">authorize</span>(<span class="hljs-string">&#x27;owner&#x27;</span>), updateMenuItem);
+router.<span class="hljs-title function_">delete</span>(<span class="hljs-string">&#x27;/:id&#x27;</span>, protect, <span class="hljs-title function_">authorize</span>(<span class="hljs-string">&#x27;owner&#x27;</span>), deleteMenuItem);
+</code></pre>
+<p><strong>WHY this pattern?</strong></p>
+<ul>
+<li><code>protect</code> middleware checks the JWT token</li>
+<li><code>authorize('owner')</code> checks if the user has the correct role</li>
+<li>If either fails, the request is rejected before reaching the controller</li>
+</ul>
+<h2 id="34-how-controllers-work">3.4 How Controllers Work</h2>
+<p>Controllers are <strong>functions</strong> that handle the actual logic. Each one follows this pattern:</p>
+<pre><code class="language-javascript"><span class="hljs-built_in">exports</span>.<span class="hljs-property">createOrder</span> = <span class="hljs-keyword">async</span> (req, res) =&gt; {
+    <span class="hljs-keyword">try</span> {
+        <span class="hljs-comment">// 1. Extract and validate data from request</span>
+        <span class="hljs-keyword">const</span> { tableNumber, customerName, items } = req.<span class="hljs-property">body</span>;
+
+        <span class="hljs-comment">// 2. Business logic (validate table, calculate total)</span>
+        <span class="hljs-keyword">const</span> totalAmount = items.<span class="hljs-title function_">reduce</span>(<span class="hljs-function">(<span class="hljs-params">sum, item</span>) =&gt;</span> 
+            sum + (item.<span class="hljs-property">price</span> * item.<span class="hljs-property">quantity</span>), <span class="hljs-number">0</span>
+        );
+
+        <span class="hljs-comment">// 3. Database operation</span>
+        <span class="hljs-keyword">const</span> order = <span class="hljs-keyword">await</span> <span class="hljs-title class_">Order</span>.<span class="hljs-title function_">create</span>(orderData);
+
+        <span class="hljs-comment">// 4. Side effects (lock table, emit socket event)</span>
+        <span class="hljs-keyword">const</span> io = req.<span class="hljs-property">app</span>.<span class="hljs-title function_">get</span>(<span class="hljs-string">&#x27;io&#x27;</span>);
+        io.<span class="hljs-title function_">emit</span>(<span class="hljs-string">&#x27;new-order&#x27;</span>, order);
+
+        <span class="hljs-comment">// 5. Send response</span>
+        res.<span class="hljs-title function_">status</span>(<span class="hljs-number">201</span>).<span class="hljs-title function_">json</span>({ <span class="hljs-attr">success</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">data</span>: order });
+    } <span class="hljs-keyword">catch</span> (error) {
+        res.<span class="hljs-title function_">status</span>(<span class="hljs-number">500</span>).<span class="hljs-title function_">json</span>({ <span class="hljs-attr">success</span>: <span class="hljs-literal">false</span>, <span class="hljs-attr">message</span>: <span class="hljs-string">&#x27;Server error&#x27;</span> });
+    }
+};
+</code></pre>
+<p><strong>WHY <code>async/await</code>?</strong><br>
+Database operations are asynchronous (they take time). <code>await</code> pauses execution until MongoDB responds, making the code readable like synchronous code.</p>
+<h2 id="35-how-middleware-works">3.5 How Middleware Works</h2>
+<p>Middleware are functions that run <strong>before</strong> the controller:</p>
+<pre><code class="language-javascript"><span class="hljs-comment">// authMiddleware.js — protect middleware</span>
+<span class="hljs-built_in">exports</span>.<span class="hljs-property">protect</span> = <span class="hljs-keyword">async</span> (req, res, next) =&gt; {
+    <span class="hljs-comment">// 1. Extract token from &quot;Authorization: Bearer &lt;token&gt;&quot; header</span>
+    <span class="hljs-keyword">const</span> token = req.<span class="hljs-property">headers</span>.<span class="hljs-property">authorization</span>?.<span class="hljs-title function_">split</span>(<span class="hljs-string">&#x27; &#x27;</span>)[<span class="hljs-number">1</span>];
+
+    <span class="hljs-keyword">if</span> (!token) {
+        <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">status</span>(<span class="hljs-number">401</span>).<span class="hljs-title function_">json</span>({ <span class="hljs-attr">message</span>: <span class="hljs-string">&#x27;Not authorized&#x27;</span> });
+    }
+
+    <span class="hljs-comment">// 2. Verify the token is valid and not expired</span>
+    <span class="hljs-keyword">const</span> decoded = jwt.<span class="hljs-title function_">verify</span>(token, process.<span class="hljs-property">env</span>.<span class="hljs-property">JWT_SECRET</span>);
+
+    <span class="hljs-comment">// 3. Find the user and attach to request</span>
+    req.<span class="hljs-property">user</span> = <span class="hljs-keyword">await</span> <span class="hljs-title class_">User</span>.<span class="hljs-title function_">findById</span>(decoded.<span class="hljs-property">id</span>).<span class="hljs-title function_">select</span>(<span class="hljs-string">&#x27;-password&#x27;</span>);
+
+    <span class="hljs-comment">// 4. Pass control to next middleware/controller</span>
+    <span class="hljs-title function_">next</span>();
+};
+</code></pre>
+<pre><code class="language-javascript"><span class="hljs-comment">// authorize middleware — checks user role</span>
+<span class="hljs-built_in">exports</span>.<span class="hljs-property">authorize</span> = <span class="hljs-function">(<span class="hljs-params">...roles</span>) =&gt;</span> {
+    <span class="hljs-keyword">return</span> <span class="hljs-function">(<span class="hljs-params">req, res, next</span>) =&gt;</span> {
+        <span class="hljs-keyword">if</span> (!roles.<span class="hljs-title function_">includes</span>(req.<span class="hljs-property">user</span>.<span class="hljs-property">role</span>)) {
+            <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">status</span>(<span class="hljs-number">403</span>).<span class="hljs-title function_">json</span>({ <span class="hljs-attr">message</span>: <span class="hljs-string">&#x27;Not authorized&#x27;</span> });
+        }
+        <span class="hljs-title function_">next</span>();
+    };
+};
+</code></pre>
+<p><strong>The flow for a protected route:</strong></p>
+<pre><code>Request ──▶ protect() ──▶ authorize('owner') ──▶ Controller
+  │            │                │
+  │            ▼                ▼
+  │       Verify JWT       Check role
+  │       Attach user      If not 'owner'
+  │       to req           → 403 Forbidden
+  │            │
+  │            ▼
+  │       If no token
+  │       → 401 Unauthorized
+</code></pre>
+<h2 id="36-jwt-authentication-flow">3.6 JWT Authentication Flow</h2>
+<pre><code>┌──────────┐                           ┌──────────┐
+│  Admin   │                           │  Server  │
+└────┬─────┘                           └────┬─────┘
+     │                                      │
+     │  POST /api/auth/login                │
+     │  { mobile, password }                │
+     │─────────────────────────────────────▶│
+     │                                      │ Find user by mobile
+     │                                      │ Compare password (bcrypt)
+     │                                      │ Generate JWT token
+     │  { token: &quot;eyJ...&quot;, user: {...} }    │
+     │◀─────────────────────────────────────│
+     │                                      │
+     │  (Frontend stores token in           │
+     │   localStorage)                      │
+     │                                      │
+     │  GET /api/orders                     │
+     │  Authorization: Bearer eyJ...        │
+     │─────────────────────────────────────▶│
+     │                                      │ protect() verifies token
+     │                                      │ authorize() checks role
+     │  { orders: [...] }                   │
+     │◀─────────────────────────────────────│
+</code></pre>
+<p><strong>WHY JWT?</strong></p>
+<ul>
+<li><strong>Stateless</strong>: Server doesn't store session data — the token contains all info</li>
+<li><strong>Scalable</strong>: Works across multiple servers</li>
+<li><strong>Self-contained</strong>: Token has user ID and role encoded inside it</li>
+</ul>
+<h2 id="37-table-locking-logic">3.7 Table Locking Logic</h2>
+<p>When a customer places a <strong>Dine-In</strong> order:</p>
+<pre><code class="language-javascript"><span class="hljs-comment">// 1. Check table exists and is free</span>
+<span class="hljs-keyword">const</span> table = <span class="hljs-keyword">await</span> <span class="hljs-title class_">Table</span>.<span class="hljs-title function_">findOne</span>({ tableNumber });
+
+<span class="hljs-keyword">if</span> (table.<span class="hljs-property">isOccupied</span>) {
+    <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">status</span>(<span class="hljs-number">400</span>).<span class="hljs-title function_">json</span>({ <span class="hljs-attr">message</span>: <span class="hljs-string">&#x27;Table is already occupied&#x27;</span> });
+}
+
+<span class="hljs-comment">// 2. Create the order</span>
+<span class="hljs-keyword">const</span> order = <span class="hljs-keyword">await</span> <span class="hljs-title class_">Order</span>.<span class="hljs-title function_">create</span>(orderData);
+
+<span class="hljs-comment">// 3. Lock the table</span>
+table.<span class="hljs-property">isOccupied</span> = <span class="hljs-literal">true</span>;
+table.<span class="hljs-property">currentOrder</span> = order.<span class="hljs-property">_id</span>;  <span class="hljs-comment">// Link table to order</span>
+<span class="hljs-keyword">await</span> table.<span class="hljs-title function_">save</span>();
+</code></pre>
+<p>When payment is received (order closed):</p>
+<pre><code class="language-javascript"><span class="hljs-comment">// Unlock the table</span>
+table.<span class="hljs-property">isOccupied</span> = <span class="hljs-literal">false</span>;
+table.<span class="hljs-property">currentOrder</span> = <span class="hljs-literal">null</span>;
+<span class="hljs-keyword">await</span> table.<span class="hljs-title function_">save</span>();
+
+<span class="hljs-comment">// Notify all clients</span>
+io.<span class="hljs-title function_">emit</span>(<span class="hljs-string">&#x27;table-available&#x27;</span>, { <span class="hljs-attr">tableNumber</span>: order.<span class="hljs-property">tableNumber</span> });
+</code></pre>
+<p><strong>WHY lock tables?</strong><br>
+Prevents two customers from selecting the same table at the same time. The table is &quot;reserved&quot; until payment is complete or order is cancelled.</p>
+<h2 id="38-order-lifecycle-logic">3.8 Order Lifecycle Logic</h2>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>Status</th>
+<th>Payment</th>
+<th>isClosed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Customer places order</td>
+<td><code>Pending</code></td>
+<td><code>Unpaid</code></td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td>Admin starts preparing</td>
+<td><code>Preparing</code></td>
+<td><code>Unpaid</code></td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td>Admin serves food</td>
+<td><code>Served</code></td>
+<td><code>Unpaid</code></td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td>Admin marks as paid</td>
+<td><code>Served</code></td>
+<td><code>Paid</code></td>
+<td><code>true</code></td>
+</tr>
+<tr>
+<td>Admin cancels order</td>
+<td>—</td>
+<td>—</td>
+<td><code>true</code> + <code>isCancelled: true</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="39-cancel-order-logic">3.9 Cancel Order Logic</h2>
+<pre><code class="language-javascript"><span class="hljs-built_in">exports</span>.<span class="hljs-property">cancelOrder</span> = <span class="hljs-keyword">async</span> (req, res) =&gt; {
+    <span class="hljs-keyword">const</span> order = <span class="hljs-keyword">await</span> <span class="hljs-title class_">Order</span>.<span class="hljs-title function_">findById</span>(req.<span class="hljs-property">params</span>.<span class="hljs-property">id</span>);
+
+    <span class="hljs-comment">// Guards — cannot cancel if:</span>
+    <span class="hljs-keyword">if</span> (order.<span class="hljs-property">isClosed</span>) <span class="hljs-keyword">return</span> <span class="hljs-title function_">error</span>(<span class="hljs-string">&#x27;Cannot cancel a closed order&#x27;</span>);
+    <span class="hljs-keyword">if</span> (order.<span class="hljs-property">isCancelled</span>) <span class="hljs-keyword">return</span> <span class="hljs-title function_">error</span>(<span class="hljs-string">&#x27;Order is already cancelled&#x27;</span>);
+    <span class="hljs-keyword">if</span> (order.<span class="hljs-property">paymentStatus</span> === <span class="hljs-string">&#x27;Paid&#x27;</span>) <span class="hljs-keyword">return</span> <span class="hljs-title function_">error</span>(<span class="hljs-string">&#x27;Cannot cancel a paid order&#x27;</span>);
+
+    <span class="hljs-comment">// Cancel</span>
+    order.<span class="hljs-property">isCancelled</span> = <span class="hljs-literal">true</span>;
+    order.<span class="hljs-property">isClosed</span> = <span class="hljs-literal">true</span>;
+    <span class="hljs-keyword">await</span> order.<span class="hljs-title function_">save</span>();
+
+    <span class="hljs-comment">// Free the table (for Dine-In)</span>
+    <span class="hljs-keyword">if</span> (order.<span class="hljs-property">orderType</span> === <span class="hljs-string">&#x27;Dine-In&#x27;</span> &amp;&amp; order.<span class="hljs-property">tableNumber</span>) {
+        <span class="hljs-keyword">const</span> table = <span class="hljs-keyword">await</span> <span class="hljs-title class_">Table</span>.<span class="hljs-title function_">findOne</span>({ <span class="hljs-attr">tableNumber</span>: order.<span class="hljs-property">tableNumber</span> });
+        table.<span class="hljs-property">isOccupied</span> = <span class="hljs-literal">false</span>;
+        table.<span class="hljs-property">currentOrder</span> = <span class="hljs-literal">null</span>;
+        <span class="hljs-keyword">await</span> table.<span class="hljs-title function_">save</span>();
+    }
+
+    <span class="hljs-comment">// Real-time notification</span>
+    io.<span class="hljs-title function_">emit</span>(<span class="hljs-string">&#x27;order-cancelled&#x27;</span>, order);
+};
+</code></pre>
+<h2 id="310-password-change--otp-flow">3.10 Password Change + OTP Flow</h2>
+<p><strong>Two methods to change password:</strong></p>
+<h3 id="method-1-change-password-logged-in-admin">Method 1: Change Password (logged-in admin)</h3>
+<pre><code>Admin ──▶ POST /api/auth/change-password
+          { oldPassword, newPassword, confirmPassword }
+          Server verifies old password → hashes new → saves
+</code></pre>
+<h3 id="method-2-forgot-password-via-email-otp">Method 2: Forgot Password via Email OTP</h3>
+<pre><code>Step 1: Admin ──▶ POST /api/auth/send-reset-otp { mobile }
+        Server sends 6-digit OTP to admin's email
+
+Step 2: Admin ──▶ POST /api/auth/verify-reset-otp
+        { mobile, otp, newPassword, confirmPassword }
+        Server verifies OTP → resets password
+</code></pre>
+<p><strong>OTP Security:</strong></p>
+<ul>
+<li>OTP is <strong>hashed</strong> with bcrypt before storing (just like passwords)</li>
+<li>OTP <strong>expires</strong> in 5 minutes</li>
+<li>Maximum <strong>3 attempts</strong>, then OTP is invalidated</li>
+<li><strong>60-second cooldown</strong> between OTP requests</li>
+</ul>
+<hr>
+<h1 id="4-database-explanation-mongodb">4. Database Explanation (MongoDB)</h1>
+<h2 id="why-mongodb">Why MongoDB?</h2>
+<ul>
+<li><strong>Flexible schema</strong> — great for evolving projects</li>
+<li><strong>JSON-like documents</strong> — maps naturally to JavaScript objects</li>
+<li><strong>Free hosting</strong> via MongoDB Atlas (cloud)</li>
+<li><strong>Mongoose ODM</strong> — gives us schema validation, methods, and hooks</li>
+</ul>
+<h2 id="all-models-explained">All Models Explained</h2>
+<h3 id="41-user-model">4.1 User Model</h3>
+<pre><code class="language-javascript"><span class="hljs-keyword">const</span> userSchema = <span class="hljs-keyword">new</span> mongoose.<span class="hljs-title class_">Schema</span>({
+    <span class="hljs-attr">mobile</span>: { <span class="hljs-attr">type</span>: <span class="hljs-title class_">String</span>, <span class="hljs-attr">required</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">unique</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">trim</span>: <span class="hljs-literal">true</span> },
+    <span class="hljs-attr">email</span>: { <span class="hljs-attr">type</span>: <span class="hljs-title class_">String</span>, <span class="hljs-attr">trim</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">lowercase</span>: <span class="hljs-literal">true</span> },
+    <span class="hljs-attr">password</span>: { <span class="hljs-attr">type</span>: <span class="hljs-title class_">String</span>, <span class="hljs-attr">required</span>: <span class="hljs-literal">true</span> },
+    <span class="hljs-attr">role</span>: { <span class="hljs-attr">type</span>: <span class="hljs-title class_">String</span>, <span class="hljs-attr">enum</span>: [<span class="hljs-string">&#x27;owner&#x27;</span>], <span class="hljs-attr">default</span>: <span class="hljs-string">&#x27;owner&#x27;</span> },
+    <span class="hljs-attr">resetOTP</span>: { <span class="hljs-attr">type</span>: <span class="hljs-title class_">String</span>, <span class="hljs-attr">default</span>: <span class="hljs-literal">null</span> },
+    <span class="hljs-attr">otpExpiry</span>: { <span class="hljs-attr">type</span>: <span class="hljs-title class_">Date</span>, <span class="hljs-attr">default</span>: <span class="hljs-literal">null</span> },
+    <span class="hljs-attr">otpAttempts</span>: { <span class="hljs-attr">type</span>: <span class="hljs-title class_">Number</span>, <span class="hljs-attr">default</span>: <span class="hljs-number">0</span> }
+}, { <span class="hljs-attr">timestamps</span>: <span class="hljs-literal">true</span> });
+</code></pre>
+<p><strong>Key features:</strong></p>
+<ul>
+<li><code>mobile</code> is unique → one account per phone number</li>
+<li><code>password</code> is <strong>never stored in plain text</strong> — hashed via pre-save hook</li>
+<li><code>role</code> is always <code>'owner'</code> — this system has only admin users</li>
+<li><code>resetOTP</code>, <code>otpExpiry</code>, <code>otpAttempts</code> manage the password reset flow</li>
+</ul>
+<p><strong>Pre-save hook (auto-hashing):</strong></p>
+<pre><code class="language-javascript">userSchema.<span class="hljs-title function_">pre</span>(<span class="hljs-string">&#x27;save&#x27;</span>, <span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span>(<span class="hljs-params">next</span>) {
+    <span class="hljs-keyword">if</span> (!<span class="hljs-variable language_">this</span>.<span class="hljs-title function_">isModified</span>(<span class="hljs-string">&#x27;password&#x27;</span>)) <span class="hljs-keyword">return</span> <span class="hljs-title function_">next</span>();  <span class="hljs-comment">// Skip if password unchanged</span>
+    <span class="hljs-keyword">const</span> salt = <span class="hljs-keyword">await</span> bcrypt.<span class="hljs-title function_">genSalt</span>(<span class="hljs-number">12</span>);
+    <span class="hljs-variable language_">this</span>.<span class="hljs-property">password</span> = <span class="hljs-keyword">await</span> bcrypt.<span class="hljs-title function_">hash</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">password</span>, salt);
+    <span class="hljs-title function_">next</span>();
+});
+</code></pre>
+<p><strong>WHY <code>isModified('password')</code>?</strong><br>
+Without this check, the password would be re-hashed every time you save the user (even when updating unrelated fields like <code>email</code>). That would corrupt the password.</p>
+<h3 id="42-menu-model">4.2 Menu Model</h3>
+<pre><code class="language-javascript"><span class="hljs-keyword">const</span> menuSchema = <span class="hljs-keyword">new</span> mongoose.<span class="hljs-title class_">Schema</span>({
+    <span class="hljs-attr">name</span>: { <span class="hljs-attr">type</span>: <span class="hljs-title class_">String</span>, <span class="hljs-attr">required</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">trim</span>: <span class="hljs-literal">true</span> },
+    <span class="hljs-attr">description</span>: { <span class="hljs-attr">type</span>: <span class="hljs-title class_">String</span>, <span class="hljs-attr">trim</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">default</span>: <span class="hljs-string">&#x27;&#x27;</span> },
+    <span class="hljs-attr">category</span>: { <span class="hljs-attr">type</span>: <span class="hljs-title class_">String</span>, <span class="hljs-attr">required</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">trim</span>: <span class="hljs-literal">true</span> },
+    <span class="hljs-attr">price</span>: { <span class="hljs-attr">type</span>: <span class="hljs-title class_">Number</span>, <span class="hljs-attr">required</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">min</span>: <span class="hljs-number">0</span> },
+    <span class="hljs-attr">image</span>: { <span class="hljs-attr">type</span>: <span class="hljs-title class_">String</span>, <span class="hljs-attr">default</span>: <span class="hljs-string">&#x27;&#x27;</span> },
+    <span class="hljs-attr">available</span>: { <span class="hljs-attr">type</span>: <span class="hljs-title class_">Boolean</span>, <span class="hljs-attr">default</span>: <span class="hljs-literal">true</span> }
+}, { <span class="hljs-attr">timestamps</span>: <span class="hljs-literal">true</span> });
+</code></pre>
+<ul>
+<li><code>category</code> is a free-text string (was previously an enum, now dynamic)</li>
+<li><code>available</code> lets admin toggle items on/off without deleting them</li>
+<li><code>timestamps: true</code> adds <code>createdAt</code> and <code>updatedAt</code> automatically</li>
+</ul>
+<h3 id="43-order-model">4.3 Order Model</h3>
+<pre><code class="language-javascript"><span class="hljs-comment">// Sub-schema for each item in the order</span>
+<span class="hljs-keyword">const</span> orderItemSchema = <span class="hljs-keyword">new</span> mongoose.<span class="hljs-title class_">Schema</span>({
+    <span class="hljs-attr">menuItem</span>: { <span class="hljs-attr">type</span>: mongoose.<span class="hljs-property">Schema</span>.<span class="hljs-property">Types</span>.<span class="hljs-property">ObjectId</span>, <span class="hljs-attr">ref</span>: <span class="hljs-string">&#x27;Menu&#x27;</span>, <span class="hljs-attr">required</span>: <span class="hljs-literal">true</span> },
+    <span class="hljs-attr">name</span>: { <span class="hljs-attr">type</span>: <span class="hljs-title class_">String</span>, <span class="hljs-attr">required</span>: <span class="hljs-literal">true</span> },
+    <span class="hljs-attr">quantity</span>: { <span class="hljs-attr">type</span>: <span class="hljs-title class_">Number</span>, <span class="hljs-attr">required</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">min</span>: <span class="hljs-number">1</span> },
+    <span class="hljs-attr">price</span>: { <span class="hljs-attr">type</span>: <span class="hljs-title class_">Number</span>, <span class="hljs-attr">required</span>: <span class="hljs-literal">true</span> }
+}, { <span class="hljs-attr">_id</span>: <span class="hljs-literal">false</span> });  <span class="hljs-comment">// No _id for sub-documents</span>
+
+<span class="hljs-keyword">const</span> orderSchema = <span class="hljs-keyword">new</span> mongoose.<span class="hljs-title class_">Schema</span>({
+    <span class="hljs-attr">orderToken</span>: { <span class="hljs-attr">type</span>: <span class="hljs-title class_">String</span>, <span class="hljs-attr">unique</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">required</span>: <span class="hljs-literal">true</span> },
+    <span class="hljs-attr">orderType</span>: { <span class="hljs-attr">type</span>: <span class="hljs-title class_">String</span>, <span class="hljs-attr">enum</span>: [<span class="hljs-string">&#x27;Dine-In&#x27;</span>, <span class="hljs-string">&#x27;Parcel&#x27;</span>], <span class="hljs-attr">required</span>: <span class="hljs-literal">true</span> },
+    <span class="hljs-attr">tableNumber</span>: { <span class="hljs-attr">type</span>: <span class="hljs-title class_">Number</span>, <span class="hljs-attr">min</span>: <span class="hljs-number">1</span> },
+    <span class="hljs-attr">customerName</span>: { <span class="hljs-attr">type</span>: <span class="hljs-title class_">String</span>, <span class="hljs-attr">required</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">trim</span>: <span class="hljs-literal">true</span> },
+    <span class="hljs-attr">customerPhone</span>: { <span class="hljs-attr">type</span>: <span class="hljs-title class_">String</span>, <span class="hljs-attr">required</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">match</span>: <span class="hljs-regexp">/^\d{10}$/</span> },
+    <span class="hljs-attr">items</span>: { <span class="hljs-attr">type</span>: [orderItemSchema], <span class="hljs-attr">required</span>: <span class="hljs-literal">true</span> },
+    <span class="hljs-attr">totalAmount</span>: { <span class="hljs-attr">type</span>: <span class="hljs-title class_">Number</span>, <span class="hljs-attr">required</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">min</span>: <span class="hljs-number">0</span> },
+    <span class="hljs-attr">status</span>: { <span class="hljs-attr">type</span>: <span class="hljs-title class_">String</span>, <span class="hljs-attr">enum</span>: [<span class="hljs-string">&#x27;Pending&#x27;</span>, <span class="hljs-string">&#x27;Preparing&#x27;</span>, <span class="hljs-string">&#x27;Served&#x27;</span>], <span class="hljs-attr">default</span>: <span class="hljs-string">&#x27;Pending&#x27;</span> },
+    <span class="hljs-attr">paymentStatus</span>: { <span class="hljs-attr">type</span>: <span class="hljs-title class_">String</span>, <span class="hljs-attr">enum</span>: [<span class="hljs-string">&#x27;Unpaid&#x27;</span>, <span class="hljs-string">&#x27;Paid&#x27;</span>], <span class="hljs-attr">default</span>: <span class="hljs-string">&#x27;Unpaid&#x27;</span> },
+    <span class="hljs-attr">isClosed</span>: { <span class="hljs-attr">type</span>: <span class="hljs-title class_">Boolean</span>, <span class="hljs-attr">default</span>: <span class="hljs-literal">false</span> },
+    <span class="hljs-attr">isCancelled</span>: { <span class="hljs-attr">type</span>: <span class="hljs-title class_">Boolean</span>, <span class="hljs-attr">default</span>: <span class="hljs-literal">false</span> }
+}, { <span class="hljs-attr">timestamps</span>: <span class="hljs-literal">true</span> });
+</code></pre>
+<p><strong>WHY <code>orderToken</code>?</strong><br>
+Customers don't have accounts. The <code>orderToken</code> is a random string stored in <code>localStorage</code> — it lets them track their order even after closing the browser.</p>
+<p><strong>WHY store item <code>name</code> and <code>price</code> inside the order?</strong><br>
+Menu prices can change later. By storing the price at order time, we preserve the exact amount the customer was charged.</p>
+<h3 id="44-table-model">4.4 Table Model</h3>
+<pre><code class="language-javascript"><span class="hljs-keyword">const</span> tableSchema = <span class="hljs-keyword">new</span> mongoose.<span class="hljs-title class_">Schema</span>({
+    <span class="hljs-attr">tableNumber</span>: { <span class="hljs-attr">type</span>: <span class="hljs-title class_">Number</span>, <span class="hljs-attr">required</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">unique</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">min</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">max</span>: <span class="hljs-number">20</span> },
+    <span class="hljs-attr">isActive</span>: { <span class="hljs-attr">type</span>: <span class="hljs-title class_">Boolean</span>, <span class="hljs-attr">default</span>: <span class="hljs-literal">true</span> },
+    <span class="hljs-attr">isOccupied</span>: { <span class="hljs-attr">type</span>: <span class="hljs-title class_">Boolean</span>, <span class="hljs-attr">default</span>: <span class="hljs-literal">false</span> },
+    <span class="hljs-attr">currentOrder</span>: { <span class="hljs-attr">type</span>: mongoose.<span class="hljs-property">Schema</span>.<span class="hljs-property">Types</span>.<span class="hljs-property">ObjectId</span>, <span class="hljs-attr">ref</span>: <span class="hljs-string">&#x27;Order&#x27;</span>, <span class="hljs-attr">default</span>: <span class="hljs-literal">null</span> }
+}, { <span class="hljs-attr">timestamps</span>: <span class="hljs-literal">true</span> });
+</code></pre>
+<ul>
+<li><code>isActive</code> — admin can disable tables (e.g., under maintenance)</li>
+<li><code>isOccupied</code> — <code>true</code> when a customer has an active order</li>
+<li><code>currentOrder</code> — <strong>references</strong> the Order document (ObjectId)</li>
+</ul>
+<h3 id="45-category-model">4.5 Category Model</h3>
+<pre><code class="language-javascript"><span class="hljs-keyword">const</span> categorySchema = <span class="hljs-keyword">new</span> mongoose.<span class="hljs-title class_">Schema</span>({
+    <span class="hljs-attr">name</span>: { <span class="hljs-attr">type</span>: <span class="hljs-title class_">String</span>, <span class="hljs-attr">required</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">unique</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">trim</span>: <span class="hljs-literal">true</span> }
+}, { <span class="hljs-attr">timestamps</span>: <span class="hljs-literal">true</span> });
+</code></pre>
+<p>Simplest model — just stores unique category names. Admin adds/deletes them dynamically.</p>
+<h2 id="relationships-between-models">Relationships Between Models</h2>
+<pre><code>┌─────────┐       ┌─────────┐       ┌───────────┐
+│  Table   │──────▶│  Order  │◀──────│  Menu     │
+│          │ 1:1   │         │  1:N  │  (items)  │
+│currentOrder      │ items[] │       │           │
+└─────────┘       └─────────┘       └───────────┘
+                       │
+                       │ belongs to
+                       ▼
+                  ┌──────────┐
+                  │ Category │ (via order.items → menu.category)
+                  └──────────┘
+</code></pre>
+<h2 id="why-objectid">Why ObjectId?</h2>
+<p><code>ObjectId</code> is MongoDB's way of creating unique identifiers. Example: <code>507f1f77bcf86cd799439011</code></p>
+<ul>
+<li><strong>Globally unique</strong> — no collisions even across servers</li>
+<li><strong>Contains timestamp</strong> — you can extract creation time from it</li>
+<li><strong>Used for references</strong> — links documents together (like foreign keys in SQL)</li>
+</ul>
+<pre><code class="language-javascript"><span class="hljs-attr">currentOrder</span>: {
+    <span class="hljs-attr">type</span>: mongoose.<span class="hljs-property">Schema</span>.<span class="hljs-property">Types</span>.<span class="hljs-property">ObjectId</span>,
+    <span class="hljs-attr">ref</span>: <span class="hljs-string">&#x27;Order&#x27;</span>  <span class="hljs-comment">// Tells Mongoose which collection to look in</span>
+}
+</code></pre>
+<p>When you call <code>.populate('currentOrder')</code>, Mongoose replaces the ObjectId with the actual Order document.</p>
+<hr>
+<h1 id="5-frontend-deep-explanation">5. Frontend Deep Explanation</h1>
+<h2 id="51-react-project-structure">5.1 React Project Structure</h2>
+<pre><code>src/
+├── components/      ← Reusable UI pieces (CardItem, Navbar, etc.)
+├── context/         ← Global state management (Auth, Cart)
+├── pages/           ← Full page components (Home, Cart, AdminDashboard)
+├── services/        ← API calls and socket connection
+├── App.jsx          ← Root component with routing
+└── main.jsx         ← React entry point (renders App)
+</code></pre>
+<h2 id="52-context-api--global-state">5.2 Context API — Global State</h2>
+<p>React <code>Context</code> lets you share data across components without passing props manually.</p>
+<h3 id="authcontext--login-state">AuthContext — Login State</h3>
+<pre><code class="language-javascript"><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> <span class="hljs-title function_">AuthProvider</span> = (<span class="hljs-params">{ children }</span>) =&gt; {
+    <span class="hljs-keyword">const</span> [user, setUser] = <span class="hljs-title function_">useState</span>(<span class="hljs-literal">null</span>);     <span class="hljs-comment">// Current admin user</span>
+    <span class="hljs-keyword">const</span> [loading, setLoading] = <span class="hljs-title function_">useState</span>(<span class="hljs-literal">true</span>); <span class="hljs-comment">// Loading state</span>
+
+    <span class="hljs-comment">// On app start: check if token in localStorage is still valid</span>
+    <span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> {
+        <span class="hljs-keyword">const</span> token = <span class="hljs-variable language_">localStorage</span>.<span class="hljs-title function_">getItem</span>(<span class="hljs-string">&#x27;token&#x27;</span>);
+        <span class="hljs-keyword">if</span> (token) {
+            authAPI.<span class="hljs-title function_">verify</span>()
+                .<span class="hljs-title function_">then</span>(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-title function_">setUser</span>(res.<span class="hljs-property">data</span>.<span class="hljs-property">user</span>))
+                .<span class="hljs-title function_">catch</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-variable language_">localStorage</span>.<span class="hljs-title function_">removeItem</span>(<span class="hljs-string">&#x27;token&#x27;</span>));
+        }
+        <span class="hljs-title function_">setLoading</span>(<span class="hljs-literal">false</span>);
+    }, []);
+
+    <span class="hljs-keyword">const</span> <span class="hljs-title function_">login</span> = <span class="hljs-keyword">async</span> (<span class="hljs-params">mobile, password</span>) =&gt; {
+        <span class="hljs-keyword">const</span> response = <span class="hljs-keyword">await</span> authAPI.<span class="hljs-title function_">login</span>(mobile, password);
+        <span class="hljs-variable language_">localStorage</span>.<span class="hljs-title function_">setItem</span>(<span class="hljs-string">&#x27;token&#x27;</span>, response.<span class="hljs-property">data</span>.<span class="hljs-property">token</span>);  <span class="hljs-comment">// Save token</span>
+        <span class="hljs-title function_">setUser</span>(response.<span class="hljs-property">data</span>.<span class="hljs-property">user</span>);  <span class="hljs-comment">// Update state</span>
+    };
+
+    <span class="hljs-keyword">const</span> <span class="hljs-title function_">logout</span> = (<span class="hljs-params"></span>) =&gt; {
+        <span class="hljs-variable language_">localStorage</span>.<span class="hljs-title function_">removeItem</span>(<span class="hljs-string">&#x27;token&#x27;</span>);  <span class="hljs-comment">// Remove token</span>
+        <span class="hljs-title function_">setUser</span>(<span class="hljs-literal">null</span>);  <span class="hljs-comment">// Clear state</span>
+    };
+};
+</code></pre>
+<p><strong>WHY Context?</strong><br>
+Every admin page needs to know if the user is logged in. Instead of passing <code>user</code> as props through 5 levels of components, we use Context — any component can access it directly:</p>
+<pre><code class="language-javascript"><span class="hljs-keyword">const</span> { user, login, logout } = <span class="hljs-title function_">useAuth</span>();
+</code></pre>
+<h3 id="cartcontext--shopping-cart-state">CartContext — Shopping Cart State</h3>
+<pre><code class="language-javascript"><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> <span class="hljs-title function_">CartProvider</span> = (<span class="hljs-params">{ children }</span>) =&gt; {
+    <span class="hljs-comment">// Initialize cart from localStorage (survives page refresh)</span>
+    <span class="hljs-keyword">const</span> [cartItems, setCartItems] = <span class="hljs-title function_">useState</span>(<span class="hljs-function">() =&gt;</span> {
+        <span class="hljs-keyword">const</span> saved = <span class="hljs-variable language_">localStorage</span>.<span class="hljs-title function_">getItem</span>(<span class="hljs-string">&#x27;cart&#x27;</span>);
+        <span class="hljs-keyword">return</span> saved ? <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">parse</span>(saved) : [];
+    });
+
+    <span class="hljs-comment">// Sync cart to localStorage whenever it changes</span>
+    <span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> {
+        <span class="hljs-variable language_">localStorage</span>.<span class="hljs-title function_">setItem</span>(<span class="hljs-string">&#x27;cart&#x27;</span>, <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(cartItems));
+    }, [cartItems]);
+
+    <span class="hljs-keyword">const</span> <span class="hljs-title function_">addToCart</span> = (<span class="hljs-params">item</span>) =&gt; {
+        <span class="hljs-title function_">setCartItems</span>(<span class="hljs-function"><span class="hljs-params">prev</span> =&gt;</span> {
+            <span class="hljs-keyword">const</span> existing = prev.<span class="hljs-title function_">findIndex</span>(<span class="hljs-function"><span class="hljs-params">i</span> =&gt;</span> i.<span class="hljs-property">_id</span> === item.<span class="hljs-property">_id</span>);
+            <span class="hljs-keyword">if</span> (existing &gt;= <span class="hljs-number">0</span>) {
+                <span class="hljs-comment">// Item already in cart → increment quantity</span>
+                <span class="hljs-keyword">const</span> updated = [...prev];
+                updated[existing].<span class="hljs-property">quantity</span> += <span class="hljs-number">1</span>;
+                <span class="hljs-keyword">return</span> updated;
+            }
+            <span class="hljs-comment">// New item → add with quantity 1</span>
+            <span class="hljs-keyword">return</span> [...prev, { ...item, <span class="hljs-attr">quantity</span>: <span class="hljs-number">1</span> }];
+        });
+    };
+
+    <span class="hljs-keyword">const</span> <span class="hljs-title function_">getCartTotal</span> = (<span class="hljs-params"></span>) =&gt; 
+        cartItems.<span class="hljs-title function_">reduce</span>(<span class="hljs-function">(<span class="hljs-params">sum, item</span>) =&gt;</span> sum + item.<span class="hljs-property">price</span> * item.<span class="hljs-property">quantity</span>, <span class="hljs-number">0</span>);
+};
+</code></pre>
+<h2 id="53-routing">5.3 Routing</h2>
+<pre><code class="language-javascript"><span class="hljs-comment">// App.jsx</span>
+&lt;<span class="hljs-title class_">Routes</span>&gt;
+    {<span class="hljs-comment">/* Customer Routes */</span>}
+    &lt;<span class="hljs-title class_">Route</span> path=<span class="hljs-string">&quot;/&quot;</span> element={<span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">Home</span> /&gt;</span></span>} /&gt;
+    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">path</span>=<span class="hljs-string">&quot;/cart&quot;</span> <span class="hljs-attr">element</span>=<span class="hljs-string">{</span>&lt;<span class="hljs-attr">Cart</span> /&gt;</span>} /&gt;</span>
+    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">path</span>=<span class="hljs-string">&quot;/order/:orderId&quot;</span> <span class="hljs-attr">element</span>=<span class="hljs-string">{</span>&lt;<span class="hljs-attr">OrderSuccess</span> /&gt;</span>} /&gt;</span>
+
+    {<span class="hljs-comment">/* Admin Routes */</span>}
+    &lt;<span class="hljs-title class_">Route</span> path=<span class="hljs-string">&quot;/admin/login&quot;</span> element={<span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">AdminLogin</span> /&gt;</span></span>} /&gt;
+    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">path</span>=<span class="hljs-string">&quot;/admin&quot;</span> <span class="hljs-attr">element</span>=<span class="hljs-string">{</span>&lt;<span class="hljs-attr">AdminDashboard</span> /&gt;</span>} /&gt;</span>
+    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">path</span>=<span class="hljs-string">&quot;/admin/orders&quot;</span> <span class="hljs-attr">element</span>=<span class="hljs-string">{</span>&lt;<span class="hljs-attr">AdminOrders</span> /&gt;</span>} /&gt;</span>
+    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">path</span>=<span class="hljs-string">&quot;/admin/tables&quot;</span> <span class="hljs-attr">element</span>=<span class="hljs-string">{</span>&lt;<span class="hljs-attr">AdminTables</span> /&gt;</span>} /&gt;</span>
+    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">path</span>=<span class="hljs-string">&quot;/admin/change-password&quot;</span> <span class="hljs-attr">element</span>=<span class="hljs-string">{</span>&lt;<span class="hljs-attr">ChangePassword</span> /&gt;</span>} /&gt;</span>
+&lt;/<span class="hljs-title class_">Routes</span>&gt;
+</code></pre>
+<p><strong>WHY <code>/order/:orderId</code>?</strong><br>
+<code>:orderId</code> is a <strong>URL parameter</strong> — it matches any value after <code>/order/</code>. The component reads it with:</p>
+<pre><code class="language-javascript"><span class="hljs-keyword">const</span> { orderId } = <span class="hljs-title function_">useParams</span>();
+</code></pre>
+<h2 id="54-protected-routes-soft-protection">5.4 Protected Routes (Soft Protection)</h2>
+<p>Instead of a separate <code>ProtectedRoute</code> component, each admin page checks auth itself:</p>
+<pre><code class="language-javascript"><span class="hljs-keyword">const</span> <span class="hljs-title function_">AdminDashboard</span> = (<span class="hljs-params"></span>) =&gt; {
+    <span class="hljs-keyword">const</span> { user, <span class="hljs-attr">loading</span>: authLoading } = <span class="hljs-title function_">useAuth</span>();
+    <span class="hljs-keyword">const</span> navigate = <span class="hljs-title function_">useNavigate</span>();
+
+    <span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> {
+        <span class="hljs-keyword">if</span> (!authLoading &amp;&amp; !user) {
+            <span class="hljs-title function_">navigate</span>(<span class="hljs-string">&#x27;/admin/login&#x27;</span>);  <span class="hljs-comment">// Redirect to login</span>
+        }
+    }, [user, authLoading, navigate]);
+};
+</code></pre>
+<p><strong>WHY check <code>authLoading</code>?</strong><br>
+On page load, <code>user</code> is <code>null</code> while the token is being verified. Without checking <code>loading</code>, the page would flash-redirect to login before verification completes.</p>
+<h2 id="55-how-ordertoken-works">5.5 How <code>orderToken</code> Works</h2>
+<p>The <code>orderToken</code> allows customers to track their order without creating an account:</p>
+<pre><code class="language-javascript"><span class="hljs-comment">// Cart.jsx — after placing order</span>
+<span class="hljs-keyword">const</span> response = <span class="hljs-keyword">await</span> ordersAPI.<span class="hljs-title function_">create</span>(orderData);
+<span class="hljs-keyword">const</span> order = response.<span class="hljs-property">data</span>.<span class="hljs-property">data</span>;
+
+<span class="hljs-comment">// Save token in browser</span>
+<span class="hljs-variable language_">localStorage</span>.<span class="hljs-title function_">setItem</span>(<span class="hljs-string">&#x27;orderToken&#x27;</span>, order.<span class="hljs-property">orderToken</span>);
+
+<span class="hljs-comment">// Navigate to order tracking page</span>
+<span class="hljs-title function_">navigate</span>(<span class="hljs-string">`/order/<span class="hljs-subst">${order._id}</span>`</span>);
+</code></pre>
+<pre><code class="language-javascript"><span class="hljs-comment">// App.jsx — OrderPersistenceChecker</span>
+<span class="hljs-comment">// On every page load, check if there&#x27;s an active order</span>
+<span class="hljs-keyword">const</span> orderToken = <span class="hljs-variable language_">localStorage</span>.<span class="hljs-title function_">getItem</span>(<span class="hljs-string">&#x27;orderToken&#x27;</span>);
+<span class="hljs-keyword">if</span> (orderToken) {
+    <span class="hljs-keyword">const</span> response = <span class="hljs-keyword">await</span> ordersAPI.<span class="hljs-title function_">getByToken</span>(orderToken);
+    <span class="hljs-keyword">const</span> order = response.<span class="hljs-property">data</span>.<span class="hljs-property">data</span>;
+
+    <span class="hljs-keyword">if</span> (order &amp;&amp; !order.<span class="hljs-property">isClosed</span>) {
+        <span class="hljs-title function_">navigate</span>(<span class="hljs-string">`/order/<span class="hljs-subst">${order._id}</span>`</span>);  <span class="hljs-comment">// Redirect to order page</span>
+    } <span class="hljs-keyword">else</span> {
+        <span class="hljs-variable language_">localStorage</span>.<span class="hljs-title function_">removeItem</span>(<span class="hljs-string">&#x27;orderToken&#x27;</span>);  <span class="hljs-comment">// Clean up closed orders</span>
+    }
+}
+</code></pre>
+<p><strong>WHY this pattern?</strong><br>
+Imagine a customer places an order, then accidentally closes the browser. When they open the site again, they're automatically redirected to their order status page — no re-ordering needed.</p>
+<h2 id="56-how-api-calls-work">5.6 How API Calls Work</h2>
+<pre><code class="language-javascript"><span class="hljs-comment">// services/api.js</span>
+<span class="hljs-keyword">import</span> axios <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;axios&#x27;</span>;
+
+<span class="hljs-keyword">const</span> api = axios.<span class="hljs-title function_">create</span>({
+    <span class="hljs-attr">baseURL</span>: <span class="hljs-string">&#x27;http://localhost:5000/api&#x27;</span>,
+    <span class="hljs-attr">headers</span>: { <span class="hljs-string">&#x27;Content-Type&#x27;</span>: <span class="hljs-string">&#x27;application/json&#x27;</span> }
+});
+
+<span class="hljs-comment">// Automatically attach JWT token to every request</span>
+api.<span class="hljs-property">interceptors</span>.<span class="hljs-property">request</span>.<span class="hljs-title function_">use</span>(<span class="hljs-function">(<span class="hljs-params">config</span>) =&gt;</span> {
+    <span class="hljs-keyword">const</span> token = <span class="hljs-variable language_">localStorage</span>.<span class="hljs-title function_">getItem</span>(<span class="hljs-string">&#x27;token&#x27;</span>);
+    <span class="hljs-keyword">if</span> (token) {
+        config.<span class="hljs-property">headers</span>.<span class="hljs-property">Authorization</span> = <span class="hljs-string">`Bearer <span class="hljs-subst">${token}</span>`</span>;
+    }
+    <span class="hljs-keyword">return</span> config;
+});
+
+<span class="hljs-comment">// Organized API functions</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> menuAPI = {
+    <span class="hljs-attr">getAll</span>: <span class="hljs-function">() =&gt;</span> api.<span class="hljs-title function_">get</span>(<span class="hljs-string">&#x27;/menu&#x27;</span>),
+    <span class="hljs-attr">create</span>: <span class="hljs-function">(<span class="hljs-params">data</span>) =&gt;</span> api.<span class="hljs-title function_">post</span>(<span class="hljs-string">&#x27;/menu&#x27;</span>, data),
+    <span class="hljs-attr">update</span>: <span class="hljs-function">(<span class="hljs-params">id, data</span>) =&gt;</span> api.<span class="hljs-title function_">put</span>(<span class="hljs-string">`/menu/<span class="hljs-subst">${id}</span>`</span>, data),
+    <span class="hljs-attr">delete</span>: <span class="hljs-function">(<span class="hljs-params">id</span>) =&gt;</span> api.<span class="hljs-title function_">delete</span>(<span class="hljs-string">`/menu/<span class="hljs-subst">${id}</span>`</span>)
+};
+</code></pre>
+<p><strong>WHY Axios interceptors?</strong><br>
+Instead of manually adding the token to every API call, the interceptor does it automatically. Every request checks <code>localStorage</code> and attaches the token if present.</p>
+<h2 id="57-how-dynamic-categories-work-frontend">5.7 How Dynamic Categories Work (Frontend)</h2>
+<pre><code class="language-javascript"><span class="hljs-comment">// AdminDashboard.jsx</span>
+<span class="hljs-keyword">const</span> [categories, setCategories] = <span class="hljs-title function_">useState</span>([]);
+
+<span class="hljs-comment">// Fetch categories on mount</span>
+<span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> {
+    <span class="hljs-keyword">if</span> (user) {
+        <span class="hljs-title function_">fetchCategories</span>();
+    }
+}, [user]);
+
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">fetchCategories</span> = <span class="hljs-keyword">async</span> (<span class="hljs-params"></span>) =&gt; {
+    <span class="hljs-keyword">const</span> response = <span class="hljs-keyword">await</span> categoriesAPI.<span class="hljs-title function_">getAll</span>();
+    <span class="hljs-title function_">setCategories</span>(response.<span class="hljs-property">data</span>.<span class="hljs-property">data</span>);  <span class="hljs-comment">// [{_id, name}, ...]</span>
+};
+
+<span class="hljs-comment">// Add new category</span>
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">handleAddCategory</span> = <span class="hljs-keyword">async</span> (<span class="hljs-params"></span>) =&gt; {
+    <span class="hljs-keyword">await</span> categoriesAPI.<span class="hljs-title function_">create</span>(trimmedName);
+    <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetchCategories</span>();  <span class="hljs-comment">// Refresh the list</span>
+    <span class="hljs-title function_">setFormData</span>(<span class="hljs-function"><span class="hljs-params">prev</span> =&gt;</span> ({ ...prev, <span class="hljs-attr">category</span>: trimmedName }));  <span class="hljs-comment">// Auto-select</span>
+};
+
+<span class="hljs-comment">// Delete category</span>
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">handleDeleteCategory</span> = <span class="hljs-keyword">async</span> (<span class="hljs-params">cat</span>) =&gt; {
+    <span class="hljs-keyword">await</span> categoriesAPI.<span class="hljs-title function_">delete</span>(cat.<span class="hljs-property">_id</span>);
+    <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetchCategories</span>();  <span class="hljs-comment">// Refresh the list</span>
+};
+</code></pre>
+<p>The dropdown dynamically renders whatever categories exist:</p>
+<pre><code class="language-jsx">&lt;select name=<span class="hljs-string">&quot;category&quot;</span> value={formData.<span class="hljs-property">category</span>}&gt;
+    {categories.<span class="hljs-title function_">map</span>(<span class="hljs-function"><span class="hljs-params">cat</span> =&gt;</span> (
+        <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">option</span> <span class="hljs-attr">key</span>=<span class="hljs-string">{cat._id}</span> <span class="hljs-attr">value</span>=<span class="hljs-string">{cat.name}</span>&gt;</span>{cat.name}<span class="hljs-tag">&lt;/<span class="hljs-name">option</span>&gt;</span></span>
+    ))}
+&lt;/select&gt;
+<span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{()</span> =&gt;</span> setShowAddCategory(true)}&gt;
+    <span class="hljs-tag">&lt;<span class="hljs-name">FiPlus</span> /&gt;</span>  {/* &quot;+&quot; button to add new category */}
+<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span></span>
+</code></pre>
+<hr>
+<h1 id="6-real-time-communication-socketio">6. Real-Time Communication (<a href="http://Socket.io">Socket.io</a>)</h1>
+<h2 id="what-is-websocket">What is WebSocket?</h2>
+<p>Normal HTTP works like a <strong>walkie-talkie</strong> — you send a request, get a response, done. To get new data, you have to ask again.</p>
+<p>WebSocket works like a <strong>phone call</strong> — once connected, both sides can send messages anytime, instantly.</p>
+<pre><code>HTTP (Traditional):
+  Client: &quot;Any new orders?&quot; ──▶ Server: &quot;No&quot;
+  Client: &quot;Any new orders?&quot; ──▶ Server: &quot;No&quot;
+  Client: &quot;Any new orders?&quot; ──▶ Server: &quot;Yes! Here's one&quot;
+
+WebSocket:
+  Client &amp; Server: *connected*
+  Server: &quot;New order just came in!&quot; ──▶ Client
+  (No polling needed!)
+</code></pre>
+<h2 id="why-socketio">Why <a href="http://Socket.io">Socket.io</a>?</h2>
+<ul>
+<li><strong>Fallback support</strong> — uses WebSocket if available, falls back to HTTP polling</li>
+<li><strong>Room system</strong> — send events to specific groups (admin room, order room)</li>
+<li><strong>Auto-reconnection</strong> — handles disconnections automatically</li>
+<li><strong>Cross-browser</strong> — works everywhere</li>
+</ul>
+<h2 id="server-side-setup">Server-Side Setup</h2>
+<pre><code class="language-javascript"><span class="hljs-comment">// server.js</span>
+<span class="hljs-keyword">const</span> io = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Server</span>(server, {
+    <span class="hljs-attr">cors</span>: { <span class="hljs-attr">origin</span>: <span class="hljs-string">&#x27;*&#x27;</span>, <span class="hljs-attr">methods</span>: [<span class="hljs-string">&#x27;GET&#x27;</span>, <span class="hljs-string">&#x27;POST&#x27;</span>, <span class="hljs-string">&#x27;PUT&#x27;</span>, <span class="hljs-string">&#x27;PATCH&#x27;</span>, <span class="hljs-string">&#x27;DELETE&#x27;</span>] }
+});
+
+<span class="hljs-comment">// Make io accessible to controllers</span>
+app.<span class="hljs-title function_">set</span>(<span class="hljs-string">&#x27;io&#x27;</span>, io);
+
+<span class="hljs-comment">// socket/socketHandler.js</span>
+<span class="hljs-keyword">const</span> <span class="hljs-title function_">socketHandler</span> = (<span class="hljs-params">io</span>) =&gt; {
+    io.<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;connection&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">socket</span>) =&gt;</span> {
+        <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`Client connected: <span class="hljs-subst">${socket.id}</span>`</span>);
+
+        <span class="hljs-comment">// Admin joins a special room to receive all order events</span>
+        socket.<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;join-admin&#x27;</span>, <span class="hljs-function">() =&gt;</span> {
+            socket.<span class="hljs-title function_">join</span>(<span class="hljs-string">&#x27;admin-room&#x27;</span>);
+        });
+
+        <span class="hljs-comment">// Customer joins their specific order room</span>
+        socket.<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;join-order&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">orderId</span>) =&gt;</span> {
+            socket.<span class="hljs-title function_">join</span>(<span class="hljs-string">`order-<span class="hljs-subst">${orderId}</span>`</span>);
+        });
+
+        socket.<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;disconnect&#x27;</span>, <span class="hljs-function">() =&gt;</span> {
+            <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`Client disconnected: <span class="hljs-subst">${socket.id}</span>`</span>);
+        });
+    });
+};
+</code></pre>
+<h2 id="client-side-setup">Client-Side Setup</h2>
+<pre><code class="language-javascript"><span class="hljs-comment">// services/socket.js</span>
+<span class="hljs-keyword">import</span> { io } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;socket.io-client&#x27;</span>;
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> socket = <span class="hljs-title function_">io</span>(<span class="hljs-variable constant_">SOCKET_URL</span>, { <span class="hljs-attr">autoConnect</span>: <span class="hljs-literal">false</span> });
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> <span class="hljs-title function_">connectSocket</span> = (<span class="hljs-params"></span>) =&gt; {
+    <span class="hljs-keyword">if</span> (!socket.<span class="hljs-property">connected</span>) socket.<span class="hljs-title function_">connect</span>();
+};
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> <span class="hljs-title function_">joinAdminRoom</span> = (<span class="hljs-params"></span>) =&gt; {
+    socket.<span class="hljs-title function_">emit</span>(<span class="hljs-string">&#x27;join-admin&#x27;</span>);
+};
+</code></pre>
+<h2 id="example-event-flow-order-placed--admin-sees-instantly">Example Event Flow: Order Placed → Admin Sees Instantly</h2>
+<pre><code>┌──────────────┐                    ┌──────────┐                 ┌──────────────┐
+│   Customer   │                    │  Server  │                 │    Admin     │
+│   Browser    │                    │          │                 │   Browser    │
+└──────┬───────┘                    └────┬─────┘                 └──────┬───────┘
+       │                                 │                              │
+       │  POST /api/orders               │                              │
+       │  { items, customerName }        │                              │
+       │────────────────────────────────▶│                              │
+       │                                 │                              │
+       │                                 │  Save to MongoDB             │
+       │                                 │  ┌───────────────┐          │
+       │                                 │──│ Order.create() │          │
+       │                                 │  └───────────────┘          │
+       │                                 │                              │
+       │                                 │  io.emit('new-order', order) │
+       │                                 │─────────────────────────────▶│
+       │                                 │                              │
+       │  { success: true, data: order } │                              │ 🔔 Toast!
+       │◀────────────────────────────────│                              │ &quot;New order
+       │                                 │                              │  received!&quot;
+       │  Navigate to /order/123         │                              │
+       ▼                                 │                              ▼
+</code></pre>
+<p><strong>Admin listens for the event:</strong></p>
+<pre><code class="language-javascript"><span class="hljs-comment">// AdminOrders.jsx</span>
+<span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> {
+    <span class="hljs-title function_">connectSocket</span>();
+    <span class="hljs-title function_">joinAdminRoom</span>();
+
+    socket.<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;new-order&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">order</span>) =&gt;</span> {
+        toast.<span class="hljs-title function_">success</span>(<span class="hljs-string">`New order from <span class="hljs-subst">${order.customerName}</span>!`</span>);
+        <span class="hljs-title function_">fetchOrders</span>();  <span class="hljs-comment">// Refresh order list</span>
+    });
+
+    socket.<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;order-updated&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">order</span>) =&gt;</span> {
+        <span class="hljs-comment">// Update the order in state</span>
+    });
+}, []);
+</code></pre>
+<hr>
+<h1 id="7-authentication--security">7. Authentication &amp; Security</h1>
+<h2 id="71-how-jwt-works">7.1 How JWT Works</h2>
+<p>JWT (JSON Web Token) is a string with 3 parts:</p>
+<pre><code>eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjEyMyIsInJvbGUiOiJvd25lciJ9.signature
+ ──────────────────    ─────────────────────────────────────    ─────────
+      HEADER                       PAYLOAD                     SIGNATURE
+   (algorithm)            (user ID + role + expiry)         (verification)
+</code></pre>
+<ul>
+<li><strong>Header</strong>: Algorithm used (HS256)</li>
+<li><strong>Payload</strong>: Data (user ID, role, expiry time)</li>
+<li><strong>Signature</strong>: Ensures the token wasn't tampered with (needs <code>JWT_SECRET</code>)</li>
+</ul>
+<p><strong>Generation:</strong></p>
+<pre><code class="language-javascript"><span class="hljs-keyword">const</span> token = jwt.<span class="hljs-title function_">sign</span>(
+    { <span class="hljs-attr">id</span>: user.<span class="hljs-property">_id</span>, <span class="hljs-attr">role</span>: user.<span class="hljs-property">role</span> },  <span class="hljs-comment">// Payload</span>
+    process.<span class="hljs-property">env</span>.<span class="hljs-property">JWT_SECRET</span>,             <span class="hljs-comment">// Secret key</span>
+    { <span class="hljs-attr">expiresIn</span>: <span class="hljs-string">&#x27;7d&#x27;</span> }                <span class="hljs-comment">// Expires in 7 days</span>
+);
+</code></pre>
+<p><strong>Verification:</strong></p>
+<pre><code class="language-javascript"><span class="hljs-keyword">const</span> decoded = jwt.<span class="hljs-title function_">verify</span>(token, process.<span class="hljs-property">env</span>.<span class="hljs-property">JWT_SECRET</span>);
+<span class="hljs-comment">// decoded = { id: &#x27;507f1f77bc...&#x27;, role: &#x27;owner&#x27;, iat: 1616..., exp: 1617... }</span>
+</code></pre>
+<h2 id="72-how-password-hashing-works-bcrypt">7.2 How Password Hashing Works (bcrypt)</h2>
+<pre><code>Plain text: &quot;myPassword123&quot;
+                │
+                ▼ bcrypt.hash()
+Hashed: &quot;$2b$12$wB/5wYEg0.K3h6rT.1e8BOlCZq...&quot;
+                │
+                ▼ (stored in database)
+</code></pre>
+<p><strong>WHY hash?</strong></p>
+<ul>
+<li>If database is hacked, attacker sees <code>$2b$12$wB/5wYE...</code>, not <code>myPassword123</code></li>
+<li>Hashing is <strong>one-way</strong> — you can't reverse it</li>
+<li><code>bcrypt</code> adds a <strong>salt</strong> (random data) — even if two users have the same password, their hashes are different</li>
+</ul>
+<p><strong>Comparison:</strong></p>
+<pre><code class="language-javascript"><span class="hljs-keyword">const</span> isMatch = <span class="hljs-keyword">await</span> bcrypt.<span class="hljs-title function_">compare</span>(<span class="hljs-string">&quot;myPassword123&quot;</span>, hashedPassword);
+<span class="hljs-comment">// true or false — bcrypt handles the comparison internally</span>
+</code></pre>
+<h2 id="73-how-otp-works">7.3 How OTP Works</h2>
+<pre><code>1. Generate random 6-digit number
+   otp = crypto.randomInt(100000, 999999)  // e.g., &quot;847291&quot;
+
+2. Hash the OTP (same reason we hash passwords)
+   hashedOtp = await bcrypt.hash(otp, salt)
+
+3. Store hashed OTP + expiry in database
+   user.resetOTP = hashedOtp
+   user.otpExpiry = Date.now() + 5 * 60 * 1000  // 5 minutes
+
+4. Send plain OTP via email (Brevo API)
+   sendOtpEmail(user.email, otp)  // &quot;Your OTP is: 847291&quot;
+
+5. When user submits OTP:
+   isValid = await bcrypt.compare(submittedOtp, user.resetOTP)
+</code></pre>
+<h2 id="74-production-security-tips">7.4 Production Security Tips</h2>
+<table>
+<thead>
+<tr>
+<th>Practice</th>
+<th>Our Implementation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Never store plain passwords</td>
+<td>bcrypt with salt rounds = 12</td>
+</tr>
+<tr>
+<td>Never send raw OTPs in API responses</td>
+<td>OTP only sent via email</td>
+</tr>
+<tr>
+<td>Expire sensitive tokens</td>
+<td>JWT: 7 days, OTP: 5 minutes</td>
+</tr>
+<tr>
+<td>Rate limiting</td>
+<td>60-second cooldown between OTP requests</td>
+</tr>
+<tr>
+<td>Input validation</td>
+<td>Both frontend and backend validate</td>
+</tr>
+<tr>
+<td>Protect admin routes</td>
+<td><code>protect</code> + <code>authorize</code> middleware</td>
+</tr>
+<tr>
+<td>Use environment variables</td>
+<td><code>.env</code> for secrets, never hardcoded</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h1 id="8-deployment-explanation">8. Deployment Explanation</h1>
+<h2 id="81-local-development">8.1 Local Development</h2>
+<pre><code>Frontend (Vite):  http://localhost:5173    ← React dev server with hot reload
+Backend (Node):   http://localhost:5000    ← Express API server
+MongoDB Atlas:    cloud.mongodb.com       ← Remote database
+</code></pre>
+<p><strong>What is localhost?</strong><br>
+<code>localhost</code> = your own computer. <code>localhost:5000</code> = &quot;port 5000 on my machine.&quot;</p>
+<h2 id="82-how-vite-works">8.2 How Vite Works</h2>
+<p>Vite is a <strong>build tool</strong> for React:</p>
+<ul>
+<li><strong>Dev mode</strong> (<code>npm run dev</code>): Runs a fast dev server with instant hot reload</li>
+<li><strong>Build mode</strong> (<code>npm run build</code>): Compiles React into static HTML/CSS/JS files for deployment</li>
+</ul>
+<h2 id="83-production-deployment">8.3 Production Deployment</h2>
+<pre><code>┌─────────────────┐        ┌──────────────────┐
+│   Render.com    │        │   Render.com     │
+│   (Frontend)    │───────▶│   (Backend)      │
+│   Static Site   │ API    │   Web Service    │
+│                 │ calls  │                  │
+└─────────────────┘        └────────┬─────────┘
+                                    │
+                                    ▼
+                           ┌──────────────────┐
+                           │  MongoDB Atlas   │
+                           │  (Cloud DB)      │
+                           └──────────────────┘
+</code></pre>
+<h2 id="84-environment-variables">8.4 Environment Variables</h2>
+<pre><code class="language-bash"><span class="hljs-comment"># Backend .env</span>
+MONGODB_URI=mongodb+srv://user:pass@cluster.mongodb.net/restaurant
+JWT_SECRET=a-long-random-secret-string
+PORT=5000
+EMAIL_USER=your-email@gmail.com
+BREVO_API_KEY=xkeysib-xxx...
+
+<span class="hljs-comment"># Frontend .env</span>
+VITE_API_URL=https://your-backend.onrender.com/api
+VITE_SOCKET_URL=https://your-backend.onrender.com
+</code></pre>
+<p><strong>WHY environment variables?</strong></p>
+<ul>
+<li>Secrets (passwords, API keys) should <strong>never</strong> be in source code</li>
+<li>Different values for development vs production</li>
+<li><code>.env</code> is in <code>.gitignore</code> — never pushed to GitHub</li>
+</ul>
+<h2 id="85-cors-explanation">8.5 CORS Explanation</h2>
+<p><strong>CORS</strong> (Cross-Origin Resource Sharing) = Browser security policy.</p>
+<p>By default, <code>localhost:5173</code> (frontend) <strong>cannot</strong> call <code>localhost:5000</code> (backend) because they're different &quot;origins.&quot;</p>
+<pre><code class="language-javascript"><span class="hljs-comment">// server.js</span>
+app.<span class="hljs-title function_">use</span>(<span class="hljs-title function_">cors</span>());  <span class="hljs-comment">// Allow ALL origins</span>
+</code></pre>
+<p>This tells the backend: &quot;Accept requests from any frontend URL.&quot;</p>
+<p>In production, you'd restrict it: <code>cors({ origin: 'https://your-frontend.com' })</code></p>
+<hr>
+<h1 id="9-step-by-step-execution-flow">9. Step-by-Step Execution Flow</h1>
+<h2 id="complete-real-flow-dine-in-order">Complete Real Flow (Dine-In Order)</h2>
+<pre><code>┌────────────────────────────────────────────────────────────────┐
+│  STEP 1: Customer Opens Site                                   │
+│  ─────────────────────────────                                 │
+│  • Browser loads React app                                     │
+│  • OrderPersistenceChecker runs:                               │
+│    - Checks localStorage for 'orderToken'                      │
+│    - If found + order active → redirects to order page         │
+│    - If not found → shows menu normally                        │
+│  • Home.jsx fetches: GET /api/menu + GET /api/categories       │
+│  • Menu items render as cards with category filter tabs        │
+└─────────────────────────────────────────────────────┬──────────┘
+                                                      │
+                                                      ▼
+┌────────────────────────────────────────────────────────────────┐
+│  STEP 2: Customer Browses Menu &amp; Adds Items                    │
+│  ──────────────────────────────────────────                    │
+│  • Customer clicks &quot;Add to Cart&quot; on MenuCard                   │
+│  • CartContext.addToCart() adds item to state                   │
+│  • Cart saved to localStorage (persists on refresh)            │
+│  • Floating cart bubble shows item count                       │
+└─────────────────────────────────────────────────────┬──────────┘
+                                                      │
+                                                      ▼
+┌────────────────────────────────────────────────────────────────┐
+│  STEP 3: Customer Goes to Cart &amp; Enters Details                │
+│  ──────────────────────────────────────────────                │
+│  • Cart.jsx shows all items with quantity controls             │
+│  • Customer selects order type: Dine-In or Parcel              │
+│  • For Dine-In: fetches available tables (GET /api/tables)     │
+│  • Selects table from dropdown                                 │
+│  • Enters name and phone number                                │
+│  • Frontend validates all fields                               │
+└─────────────────────────────────────────────────────┬──────────┘
+                                                      │
+                                                      ▼
+┌────────────────────────────────────────────────────────────────┐
+│  STEP 4: Customer Places Order                                 │
+│  ─────────────────────────────                                 │
+│  • Frontend sends: POST /api/orders                            │
+│  • Backend validates everything:                               │
+│    - Order type valid?                                         │
+│    - Customer name ≥ 2 chars?                                  │
+│    - Phone is 10 digits?                                       │
+│    - Table exists and not occupied? (Dine-In only)             │
+│  • Generates unique orderToken                                 │
+│  • Creates Order document in MongoDB                           │
+│  • Locks the table (isOccupied = true)                         │
+│  • Emits Socket.io: 'new-order' + 'table-occupied'            │
+│  • Returns order data to frontend                              │
+│  • Frontend saves orderToken to localStorage                   │
+│  • Cart is cleared                                             │
+│  • Navigates to /order/:orderId                                │
+└─────────────────────────────────────────────────────┬──────────┘
+                                                      │
+                                                      ▼
+┌────────────────────────────────────────────────────────────────┐
+│  STEP 5: Admin Sees Order Instantly                            │
+│  ──────────────────────────────                                │
+│  • AdminOrders.jsx is listening via Socket.io                  │
+│  • 'new-order' event fires → toast notification appears        │
+│  • Order list refreshes → new order shown as &quot;Pending&quot;         │
+│  • Admin sees: customer name, phone, items, table number       │
+└─────────────────────────────────────────────────────┬──────────┘
+                                                      │
+                                                      ▼
+┌────────────────────────────────────────────────────────────────┐
+│  STEP 6: Admin Updates Status                                  │
+│  ────────────────────────────                                  │
+│  • Admin clicks &quot;Preparing&quot; → PATCH /api/orders/:id            │
+│  • Backend updates status, emits 'order-updated'               │
+│  • Customer's OrderSuccess page receives event                 │
+│  • Status badge changes: Pending → Preparing → Served          │
+└─────────────────────────────────────────────────────┬──────────┘
+                                                      │
+                                                      ▼
+┌────────────────────────────────────────────────────────────────┐
+│  STEP 7: Payment Received                                      │
+│  ────────────────────────                                      │
+│  • Admin clicks &quot;Payment Received&quot;                             │
+│  • Backend: PATCH /api/orders/:id/payment                      │
+│    - paymentStatus → 'Paid'                                    │
+│    - isClosed → true                                           │
+│    - Table unlocked (isOccupied = false)                       │
+│  • Emits: 'order-updated', 'order-closed', 'table-available'  │
+│  • Customer's page shows &quot;Payment Complete&quot;                    │
+│  • Customer's localStorage 'orderToken' cleaned up             │
+└────────────────────────────────────────────────────────────────┘
+</code></pre>
+<hr>
+<h1 id="10-common-bugs--debugging-guide">10. Common Bugs &amp; Debugging Guide</h1>
+<h2 id="101-cors-error">10.1 CORS Error</h2>
+<pre><code>Access to XMLHttpRequest at 'http://localhost:5000/api'
+from origin 'http://localhost:5173' has been blocked by CORS policy
+</code></pre>
+<p><strong>Fix:</strong> Ensure <code>app.use(cors())</code> is in <code>server.js</code>, and it's placed <strong>before</strong> route definitions.</p>
+<h2 id="102-blank-page-react">10.2 Blank Page (React)</h2>
+<p><strong>Causes:</strong></p>
+<ul>
+<li>Import errors (wrong path to component)</li>
+<li>JavaScript error in a component (check browser console)</li>
+<li>Missing environment variable (check <code>VITE_API_URL</code>)</li>
+</ul>
+<p><strong>Fix:</strong> Open browser DevTools → Console tab → look for red errors.</p>
+<h2 id="103-token-expired--401-unauthorized">10.3 Token Expired / 401 Unauthorized</h2>
+<pre><code>{ success: false, message: &quot;Not authorized to access this route&quot; }
+</code></pre>
+<p><strong>Causes:</strong></p>
+<ul>
+<li>JWT token expired (after 7 days)</li>
+<li>Token was corrupted in localStorage</li>
+<li>Backend <code>JWT_SECRET</code> changed</li>
+</ul>
+<p><strong>Fix:</strong> Logout → Login again. This generates a fresh token.</p>
+<h2 id="104-mongodb-not-connecting">10.4 MongoDB Not Connecting</h2>
+<pre><code>Error: MongoNetworkError: failed to connect to server
+</code></pre>
+<p><strong>Causes:</strong></p>
+<ul>
+<li>Wrong <code>MONGODB_URI</code> in <code>.env</code></li>
+<li>IP not whitelisted in MongoDB Atlas</li>
+<li>Internet connection issue</li>
+</ul>
+<p><strong>Fix:</strong> Go to MongoDB Atlas → Network Access → Add your IP (or <code>0.0.0.0/0</code> for access from anywhere).</p>
+<h2 id="105-port-already-in-use">10.5 Port Already in Use</h2>
+<pre><code>Error: listen EADDRINUSE: address already in use :::5000
+</code></pre>
+<p><strong>Fix (Windows):</strong></p>
+<pre><code class="language-bash">netstat -ano | findstr :5000
+taskkill /PID &lt;PID_NUMBER&gt; /F
+</code></pre>
+<h2 id="106-localstorage-issues">10.6 localStorage Issues</h2>
+<p><strong>Problem:</strong> Cart items persist even after they should be cleared.</p>
+<p><strong>Debug:</strong></p>
+<ol>
+<li>Open DevTools → Application tab → Local Storage</li>
+<li>Check values of <code>cart</code>, <code>orderToken</code>, <code>token</code>, <code>tableNumber</code></li>
+<li>Manually delete entries to reset state</li>
+</ol>
+<hr>
+<h1 id="11-learning-section">11. Learning Section</h1>
+<h2 id="what-you-learned-from-this-project">What You Learned From This Project</h2>
+<h3 id="backend-skills">Backend Skills</h3>
+<table>
+<thead>
+<tr>
+<th>Concept</th>
+<th>Real-World Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>REST API design</td>
+<td>How every web app communicates</td>
+</tr>
+<tr>
+<td>JWT authentication</td>
+<td>Used by Netflix, Instagram, Twitter</td>
+</tr>
+<tr>
+<td>Middleware pattern</td>
+<td>Every Express app uses this</td>
+</tr>
+<tr>
+<td>MongoDB with Mongoose</td>
+<td>NoSQL database management</td>
+</tr>
+<tr>
+<td><a href="http://Socket.io">Socket.io</a> real-time</td>
+<td>Chat apps, dashboards, notifications</td>
+</tr>
+<tr>
+<td>Password hashing (bcrypt)</td>
+<td>Core security practice</td>
+</tr>
+<tr>
+<td>Email integration (Brevo)</td>
+<td>Transactional emails, OTP</td>
+</tr>
+<tr>
+<td>Error handling middleware</td>
+<td>Production error management</td>
+</tr>
+</tbody>
+</table>
+<h3 id="frontend-skills">Frontend Skills</h3>
+<table>
+<thead>
+<tr>
+<th>Concept</th>
+<th>Real-World Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>React hooks (useState, useEffect)</td>
+<td>Core of modern React</td>
+</tr>
+<tr>
+<td>Context API</td>
+<td>State management (alternative to Redux)</td>
+</tr>
+<tr>
+<td>React Router</td>
+<td>SPA navigation</td>
+</tr>
+<tr>
+<td>Axios with interceptors</td>
+<td>API communication</td>
+</tr>
+<tr>
+<td>localStorage persistence</td>
+<td>Offline-capable apps</td>
+</tr>
+<tr>
+<td>Form validation</td>
+<td>Every web app with forms</td>
+</tr>
+<tr>
+<td>Conditional rendering</td>
+<td>Dynamic UI</td>
+</tr>
+<tr>
+<td>CSS-in-dark-mode</td>
+<td>Modern UI design</td>
+</tr>
+</tbody>
+</table>
+<h2 id="how-this-relates-to-real-industry">How This Relates to Real Industry</h2>
+<p>This project follows the <strong>exact same architecture</strong> used at companies:</p>
+<pre><code>Your Project            →    Industry Equivalent
+──────────────────────────────────────────────────
+Express + MongoDB       →    Django + PostgreSQL (Instagram)
+JWT Auth                →    OAuth2 + JWT (Google)
+Socket.io               →    WebSockets (Slack, Discord)
+React + Context         →    React + Redux (Facebook)
+REST API                →    REST / GraphQL (GitHub)
+Axios interceptors      →    API Gateway pattern
+</code></pre>
+<h2 id="how-this-can-become-a-saas">How This Can Become a SaaS</h2>
+<p>A <strong>SaaS (Software as a Service)</strong> means multiple restaurants use your platform:</p>
+<pre><code>┌──────────────────────────────────────────────────────┐
+│                   Multi-Tenant SaaS                   │
+│                                                       │
+│  Restaurant A  ──▶  your-app.com/restaurant-a        │
+│  Restaurant B  ──▶  your-app.com/restaurant-b        │
+│  Restaurant C  ──▶  your-app.com/restaurant-c        │
+│                                                       │
+│  Each restaurant gets:                                │
+│  • Their own menu                                     │
+│  • Their own orders                                   │
+│  • Their own tables                                   │
+│  • Custom branding                                    │
+│  • QR code for customers                              │
+│                                                       │
+│  Revenue model:                                       │
+│  • Monthly subscription (₹499/month)                  │
+│  • Commission per order (2%)                          │
+│  • Premium features (analytics, SMS)                  │
+└──────────────────────────────────────────────────────┘
+</code></pre>
+<h2 id="how-to-extend-this-project-further">How to Extend This Project Further</h2>
+<table>
+<thead>
+<tr>
+<th>Extension</th>
+<th>Difficulty</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>QR Code Ordering</strong></td>
+<td>Easy</td>
+<td>Generate QR code per table → scans open menu</td>
+</tr>
+<tr>
+<td><strong>Image Upload</strong></td>
+<td>Medium</td>
+<td>Cloudinary integration for dish photos</td>
+</tr>
+<tr>
+<td><strong>SMS Notifications</strong></td>
+<td>Medium</td>
+<td>Twilio for order updates via SMS</td>
+</tr>
+<tr>
+<td><strong>Analytics Dashboard</strong></td>
+<td>Medium</td>
+<td>Charts for revenue, popular items, peak hours</td>
+</tr>
+<tr>
+<td><strong>Customer Reviews</strong></td>
+<td>Easy</td>
+<td>Rating system for menu items</td>
+</tr>
+<tr>
+<td><strong>Multi-Language</strong></td>
+<td>Medium</td>
+<td>i18n support (Hindi, English)</td>
+</tr>
+<tr>
+<td><strong>Payment Gateway</strong></td>
+<td>Hard</td>
+<td>Razorpay/Stripe integration for online payments</td>
+</tr>
+<tr>
+<td><strong>Kitchen Display</strong></td>
+<td>Medium</td>
+<td>Separate screen for kitchen staff</td>
+</tr>
+<tr>
+<td><strong>Inventory Management</strong></td>
+<td>Hard</td>
+<td>Track ingredients, auto-disable when out of stock</td>
+</tr>
+<tr>
+<td><strong>Mobile App</strong></td>
+<td>Hard</td>
+<td>React Native app using same backend API</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<blockquote>
+<p><strong>📝 Note:</strong> This documentation covers the project as of February 2026. As you add new features, update this document to keep it current.</p>
+</blockquote>
+<hr>
+<p><em>Built with ❤️ as a learning project. Every line of code teaches something.</em></p>
+
+            <script async src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script>
+            
+        </body>
+        </html>
